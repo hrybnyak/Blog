@@ -15,6 +15,9 @@ using BLL.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using DAL.Entities;
+using BLL.Helpers;
+using Microsoft.AspNetCore.Identity;
 
 namespace Blog
 {
@@ -27,15 +30,14 @@ namespace Blog
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
-            InjectionResolver.Inject(services, Configuration.GetConnectionString("BloggingDatabase"));
             services.AddControllers();
             services.AddSwaggerDocument();
+            
             string _secretKey = Configuration.GetSection("Secret").Value;
             SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_secretKey));
 
         var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
 
-            // Configure JwtIssuerOptions
             services.Configure<JwtIssuerOptions>(options =>
             {
                 options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
@@ -70,7 +72,11 @@ namespace Blog
                 configureOptions.TokenValidationParameters = tokenValidationParameters;
                 configureOptions.SaveToken = true;
             });
-
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ApiUser", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
+            });
+            InjectionResolver.Inject(services, Configuration.GetConnectionString("BloggingDatabase"));
         }
 
         
