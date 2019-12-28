@@ -17,5 +17,6 @@ namespace DAL.Entities
         public User User { get; set; }
         [ForeignKey("User")]
         public string UserId { get; set; }
+        public DateTime Created { get; set; }
     }
 }

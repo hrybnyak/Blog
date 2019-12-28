@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using DAL.Entities;
+using NLog;
 
 namespace BLL.Infrastructure
 {
@@ -19,10 +20,14 @@ namespace BLL.Infrastructure
                 o.Password.RequiredLength = 6;
                 o.Password.RequireLowercase = true;
                 o.Password.RequireUppercase = true;
+                o.Password.RequireDigit = false;
+                o.Password.RequireNonAlphanumeric = false;
             }).AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-
-            services.AddSingleton<IJwtFactory, JwtFactory>();
+            
+            services.AddScoped<IJwtFactory, JwtFactory>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAccountService, AccountService>();
         }
     }
 }

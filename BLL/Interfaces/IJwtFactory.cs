@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Entities;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
@@ -9,6 +10,6 @@ namespace BLL.Interfaces
     public interface IJwtFactory
     {
         Task<string> GenerateEncodedToken(string userName, ClaimsIdentity identity);
-        ClaimsIdentity GenerateClaimsIdentity(string userName, string id);
+        Task<ClaimsIdentity> GenerateClaimsIdentity(User user);
     }
 }

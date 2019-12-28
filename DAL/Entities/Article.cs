@@ -12,6 +12,7 @@ namespace DAL.Entities
         [MaxLength(500)]
         public string Name { get; set; }
         public string Content { get; set; }
+        public DateTime Created { get; set; }
         [ForeignKey("Blog")]
         public int BlogId { get; set; }
         public Blog Blog{ get; set; }

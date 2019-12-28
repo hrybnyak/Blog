@@ -16,8 +16,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using DAL.Entities;
-using BLL.Helpers;
 using Microsoft.AspNetCore.Identity;
+using NLog.Web;
 
 namespace Blog
 {
@@ -30,6 +30,7 @@ namespace Blog
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddControllers();
             services.AddSwaggerDocument();
             
@@ -72,10 +73,7 @@ namespace Blog
                 configureOptions.TokenValidationParameters = tokenValidationParameters;
                 configureOptions.SaveToken = true;
             });
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("ApiUser", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
-            });
+            services.AddAuthorization();
             InjectionResolver.Inject(services, Configuration.GetConnectionString("BloggingDatabase"));
         }
 
@@ -102,6 +100,7 @@ namespace Blog
 
             app.UseOpenApi();
             app.UseSwaggerUi3();
+            
         }
     }
 }
