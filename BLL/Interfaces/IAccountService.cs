@@ -9,5 +9,9 @@ namespace BLL.Interfaces
     public interface IAccountService
     {
         Task<UserDTO> RegisterRegularUser(UserDTO userDTO);
+        Task<UserDTO> RegisterModerator(UserDTO userDTO);
+        Task<IEnumerable<UserDTO>> GetAllRegularUsers();
+        Task<IEnumerable<UserDTO>> GetAllUsers();
+        Task<UserDTO> GetUserById(string id, string token);
     }
 }

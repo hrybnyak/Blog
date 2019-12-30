@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using NLog.Web;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Blog
 {
@@ -30,14 +32,16 @@ namespace Blog
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            InjectionResolver.Inject(services, Configuration.GetConnectionString("BloggingDatabase"));
+
+            services.AddCors();
             services.AddControllers();
             services.AddSwaggerDocument();
             
             string _secretKey = Configuration.GetSection("Secret").Value;
             SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_secretKey));
 
-        var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
+            var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
 
             services.Configure<JwtIssuerOptions>(options =>
             {
@@ -71,10 +75,26 @@ namespace Blog
             {
                 configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
                 configureOptions.TokenValidationParameters = tokenValidationParameters;
+                configureOptions.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        // Add the access_token as a claim, as we may actually need it
+                        var accessToken = context.SecurityToken as JwtSecurityToken;
+                        if (accessToken != null)
+                        {
+                            ClaimsIdentity identity = context.Principal.Identity as ClaimsIdentity;
+                            if (identity != null)
+                            {
+                                identity.AddClaim(new Claim("access_token", accessToken.RawData));
+                            }
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
                 configureOptions.SaveToken = true;
             });
-            services.AddAuthorization();
-            InjectionResolver.Inject(services, Configuration.GetConnectionString("BloggingDatabase"));
         }
 
         
@@ -88,15 +108,19 @@ namespace Blog
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseAuthorization();
-
+            
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
             app.UseOpenApi();
             app.UseSwaggerUi3();

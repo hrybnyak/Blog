@@ -26,6 +26,12 @@ namespace BLL.Services
             ThrowIfInvalidOptions(_jwtOptions);
         }
 
+        public JwtSecurityToken GenerateDecodedToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            return handler.ReadJwtToken(token);
+        }
+
         public async Task<string> GenerateEncodedToken(string userName, ClaimsIdentity identity)
         {
             var claims = new List<Claim>
@@ -54,7 +60,7 @@ namespace BLL.Services
         {
             var claims = new ClaimsIdentity(new GenericIdentity(user.UserName, "Token"), new[]
             {
-                new Claim(ClaimTypes.Name, user.Id)
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
             });
             var roles = await _userManager.GetRolesAsync(user);
             claims.AddClaims(roles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));

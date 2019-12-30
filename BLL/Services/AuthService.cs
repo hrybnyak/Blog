@@ -59,7 +59,7 @@ namespace BLL.Services
             if (token == null) throw new ArgumentNullException();
             return new
             {
-                id = identity.Name,
+                id = identity.FindFirst(ClaimTypes.NameIdentifier).Value,
                 auth_token = token,
                 expires_in = (int)_jwtOptions.ValidFor.TotalSeconds
             };

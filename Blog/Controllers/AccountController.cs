@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using BLL.DTO;
 using BLL.Exceptions;
 using BLL.Interfaces;
 using BLL.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +17,7 @@ namespace Blog.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
@@ -26,7 +29,41 @@ namespace Blog.Controllers
             _accountService = accountService;
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            try
+            {
+                string accessToken = User.FindFirst("access_token")?.Value;
+                if (accessToken == null) throw new ArgumentNullException("Couldn't get the header");
+                var user = await _accountService.GetUserById(id, accessToken);
+                return Ok(user);
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return NotFound();
+            }
+            catch (NotEnoughtRightsException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return BadRequest();
+            }
+
+        }
+
         [HttpPost]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateRegularUser([FromBody] UserDTO user)
@@ -36,7 +73,7 @@ namespace Blog.Controllers
                 var result = await _accountService.RegisterRegularUser(user);
                 if (result != null)
                 {
-                    return CreatedAtAction(nameof(GetUserById), result.Id, result);
+                    return CreatedAtAction(nameof(GetUserById), new { id = result.Id }, result);
                 }
                 else throw new ArgumentNullException();
             }
@@ -65,14 +102,6 @@ namespace Blog.Controllers
                 _logger.LogError(ex, "Error occurred while user tried to sign up");
                 return BadRequest();
             }
-        }
-
-        [HttpGet]
-        [Route("{id}")]
-        [Authorize]
-        public async Task<IActionResult> GetUserById(string id)
-        {
-            return Ok();
         }
     }
 }
