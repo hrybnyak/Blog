@@ -65,10 +65,11 @@ namespace BLL.Services
             {
                 foreach (TegDTO teg in article.Tegs)
                 {
-                    var tegEntity = _unitOfWork.TegRepository.Get(t => t.Name == teg.Name).FirstOrDefault();
+                    var tegEntity = _unitOfWork.TegRepository.Get(t => t.Name == teg.Name, includeProperties: "ArticleTegs").FirstOrDefault();
                     if (tegEntity == null)
                     {
                         tegEntity = TegMapper.Map(teg);
+                        tegEntity.ArticleTegs = new List<ArticleTeg>();
                         await _unitOfWork.TegRepository.InsertAsync(tegEntity);
                         await _unitOfWork.SaveAsync();
                     }
@@ -80,6 +81,7 @@ namespace BLL.Services
                     tegEntity.ArticleTegs.Add(connection);
                     //articleEntity.ArticleTegs.Add(connection);
                     _unitOfWork.TegRepository.Update(tegEntity);
+                    //_unitOfWork.ArticleRepository.Update(articleEntity);
                     await _unitOfWork.SaveAsync();
                 }
             }
@@ -98,6 +100,7 @@ namespace BLL.Services
             articleEntity.LastUpdate = DateTime.Now;
             await _unitOfWork.ArticleRepository.InsertAsync(articleEntity);
             await _unitOfWork.SaveAsync();
+            await AddTegs(articleEntity, article);
             var result = ArticleMapper.Map(articleEntity);
             result.Tegs = article.Tegs;
             return result;
