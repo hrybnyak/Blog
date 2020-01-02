@@ -40,7 +40,7 @@ namespace Blog.Controllers
             try
             {
                 string accessToken = User.FindFirst("access_token")?.Value;
-                if (accessToken == null) throw new ArgumentNullException("Couldn't get the header");
+                if (accessToken == null) throw new ArgumentNullException("Couldn't get the token user authorized with");
                 var user = await _accountService.GetUserById(id, accessToken);
                 return Ok(user);
             }
@@ -59,7 +59,6 @@ namespace Blog.Controllers
                 _logger.LogError(ex, ex.Message);
                 return BadRequest();
             }
-
         }
 
         [HttpPost]
@@ -100,6 +99,39 @@ namespace Blog.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while user tried to sign up");
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteUser (string id)
+        {
+            try
+            {
+                string accessToken = User.FindFirst("access_token")?.Value;
+                if (accessToken == null) throw new ArgumentNullException("Couldn't get the token user authorized with");
+                bool result = await _accountService.DeleteUser(id, accessToken);
+                if (result == true) return NoContent();
+                else return BadRequest();
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return NotFound();
+            }
+            catch (NotEnoughtRightsException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
                 return BadRequest();
             }
         }

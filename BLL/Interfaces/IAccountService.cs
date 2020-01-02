@@ -13,5 +13,6 @@ namespace BLL.Interfaces
         Task<IEnumerable<UserDTO>> GetAllRegularUsers();
         Task<IEnumerable<UserDTO>> GetAllUsers();
         Task<UserDTO> GetUserById(string id, string token);
+        Task<bool> DeleteUser(string id, string token);
     }
 }

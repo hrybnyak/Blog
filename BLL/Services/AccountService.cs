@@ -118,5 +118,21 @@ namespace BLL.Services
             if (!password.Any(char.IsLower)) return false;
             return true;
         }
+        public async Task<bool> DeleteUser(string id, string token)
+        {
+            if (id == null || token == null) throw new ArgumentNullException();
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) throw new ArgumentNullException("Couldn't find user with this id");
+
+            var decodedToken = _jwtFactory.GenerateDecodedToken(token);
+            string claimsId = decodedToken.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+
+            if (claimsId == id) { 
+                var result = await _userManager.DeleteAsync(user);
+                return result.Succeeded;
+            }
+            else throw new NotEnoughtRightsException();
+        }
     }
 }
