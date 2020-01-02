@@ -12,10 +12,9 @@ namespace BLL.Mappers
         {
             return new Article
             {
-                Id = element.Id,
                 Name = element.Name,
                 Content = element.Content,
-                BlogId = element.BlogId
+                BlogId = element.BlogId.GetValueOrDefault()
             };
         }
 
@@ -27,7 +26,7 @@ namespace BLL.Mappers
                 Name = element.Name,
                 Content = element.Content,
                 BlogId = element.BlogId,
-                Created = element.Created
+                LastUpdate = element.LastUpdate
             };
         }
     }

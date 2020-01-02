@@ -20,22 +20,12 @@ namespace BLL.Services
         private ArticleMapper _articleMapper;
         private readonly IJwtFactory _jwtFactory;
 
-        public BlogService(IJwtFactory jwtFactory, IUnitOfWork unitOfWork)
+        public BlogService(IJwtFactory jwtFactory, IUnitOfWork unitOfWork, IAuthService authService)
         {
             _jwtFactory = jwtFactory;
             _unitOfWork = unitOfWork;
+
         }
-        //private UnitOfWork UnitOfWork
-        //{
-        //    get
-        //    {
-        //        if (_unitOfWork == null)
-        //        {
-        //            _unitOfWork = new UnitOfWork();
-        //        }
-        //        return _unitOfWork;
-        //    }
-        //}
         private BlogMapper BlogMapper
         {
             get
@@ -61,24 +51,17 @@ namespace BLL.Services
         }
         private bool ConfigureRights(string token, string id)
         {
-            string claimsId = GetUserIdClaim(token);
+            string claimsId = _jwtFactory.GetUserIdClaim(token);
             if (claimsId == null) throw new ArgumentNullException(nameof(claimsId));
             if (id == null) throw new ArgumentNullException(nameof(id));
             if (claimsId.CompareTo(id) == 0) return true;
             else return false;
         }
 
-        private string GetUserIdClaim (string token)
-        {
-            if (token == null) throw new ArgumentNullException(nameof(token));
-            var decodedToken = _jwtFactory.GenerateDecodedToken(token);
-            return decodedToken.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-        }
-
         public async Task<BlogDTO> CreateBlog (BlogDTO blog, string token)
         {
             if (blog == null) throw new ArgumentNullException(nameof(blog));
-            string claimsId = GetUserIdClaim(token);
+            string claimsId = _jwtFactory.GetUserIdClaim(token);
             var blogEntity = BlogMapper.Map(blog);
             blogEntity.OwnerId = claimsId;
 
@@ -93,7 +76,8 @@ namespace BLL.Services
         public void DeleteBlog(BlogDTO blog, string token)
         {
             if (blog == null) throw new ArgumentNullException(nameof(blog));
-            var blogEntity = _unitOfWork.BlogRepository.GetById(blog.Id);
+            if (blog.Id == null) throw new ArgumentNullException(nameof(blog.Id));
+            var blogEntity = _unitOfWork.BlogRepository.GetById(blog.Id.GetValueOrDefault());
             if (blogEntity == null)
             {
                 blogEntity = _unitOfWork.BlogRepository.Get(b => b.Name == blog.Name).FirstOrDefault();
@@ -108,8 +92,8 @@ namespace BLL.Services
         }
         public void UpdateBlogName (BlogDTO blog, string token)
         {
-
-            var entity = _unitOfWork.BlogRepository.GetById(blog.Id);
+            if (blog.Id == null) throw new ArgumentNullException(nameof(blog.Id));
+            var entity = _unitOfWork.BlogRepository.GetById(blog.Id.GetValueOrDefault());
             if (entity == null) throw new ArgumentNullException(nameof(entity), "This blog doesn't exist2");
             if (!ConfigureRights(token,entity.OwnerId)) throw new NotEnoughtRightsException();
             if (_unitOfWork.BlogRepository.Get(b => b.Name == blog.Name).FirstOrDefault() != null) throw new NameIsAlreadyTakenException();
@@ -122,7 +106,7 @@ namespace BLL.Services
             var blog = _unitOfWork.BlogRepository.Get((b => b.Id == id), includeProperties: "Articles,Owner").FirstOrDefault();
             if (blog == null) throw new ArgumentNullException(nameof(blog), "Couldn't find blog by id");
             var dto = BlogMapper.Map(blog);
-            if (blog.Articles.Count>0) dto.Articles = _articleMapper.Map(blog.Articles);
+            if (blog.Articles.Count>0) dto.Articles = ArticleMapper.Map(blog.Articles);
             if (blog.Owner != null) dto.OwnerUsername = blog.Owner.UserName;
             return dto;
         }
@@ -130,5 +114,6 @@ namespace BLL.Services
         {
             return BlogMapper.Map(_unitOfWork.BlogRepository.Get());
         }
+
     }
 }

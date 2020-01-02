@@ -12,7 +12,6 @@ namespace BLL.Mappers
         {
             return new Teg
             {
-                Id = element.Id,
                 Name = element.Name
             };
         }

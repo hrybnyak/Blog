@@ -13,10 +13,8 @@ namespace BLL.Mappers
         {
             return new Comment
             {
-                Id = element.Id,
                 Content = element.Content,
-                Created = element.Created,
-                ArticleId = element.ArticleId
+                ArticleId = element.ArticleId.GetValueOrDefault()
             };
         }
 
@@ -26,7 +24,7 @@ namespace BLL.Mappers
             {
                 Id = element.Id,
                 Content = element.Content,
-                Created = element.Created,
+                LastUpdate = element.LastUpdated,
                 ArticleId = element.ArticleId
             };
         }

@@ -31,6 +31,19 @@ namespace BLL.Services
             var handler = new JwtSecurityTokenHandler();
             return handler.ReadJwtToken(token);
         }
+        public string GetUserIdClaim(string token)
+        {
+            if (token == null) throw new ArgumentNullException(nameof(token));
+            var decodedToken = GenerateDecodedToken(token);
+            return decodedToken.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+        }
+
+        public string GetUserRoleClaim(string token)
+        {
+            if (token == null) throw new ArgumentNullException(nameof(token));
+            var decodedToken = GenerateDecodedToken(token);
+            return decodedToken.Claims.First(c => c.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
+        }
 
         public async Task<string> GenerateEncodedToken(string userName, ClaimsIdentity identity)
         {

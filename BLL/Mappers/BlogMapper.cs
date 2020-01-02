@@ -23,7 +23,6 @@ namespace BLL.Mappers
         {
             return new Blog
             {
-                Id = element.Id,
                 Name = element.Name
             };
         }

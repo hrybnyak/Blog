@@ -32,6 +32,7 @@ namespace BLL.Infrastructure
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IBlogService, BlogService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IArticleService, ArticleService>();
         }
     }
 }

@@ -93,11 +93,10 @@ namespace BLL.Services
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) throw new ArgumentNullException(nameof(user), "Couldn't find user with this id");
 
-            var decodedToken = _jwtFactory.GenerateDecodedToken(token);
-            string claimsId = decodedToken.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            string claimsId = _jwtFactory.GetUserIdClaim(token);
 
             if (claimsId == id) return UserMapper.Map(user);
-            string claimsRole = decodedToken.Claims.First(c => c.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
+            string claimsRole = _jwtFactory.GetUserRoleClaim(token);
             if (claimsRole == "Moderator")
             {
                 var roles = await _userManager.GetRolesAsync(user);
@@ -126,8 +125,7 @@ namespace BLL.Services
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) throw new ArgumentNullException(nameof(user), "Couldn't find user with this id");
 
-            var decodedToken = _jwtFactory.GenerateDecodedToken(token);
-            string claimsId = decodedToken.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            string claimsId = _jwtFactory.GetUserIdClaim(token);
 
             if (claimsId == id) { 
                 var result = await _userManager.DeleteAsync(user);
