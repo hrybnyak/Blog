@@ -2,10 +2,7 @@
 using DAL.Entities;
 using DAL.Interfaces;
 using DAL.Repositories;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.UnitOfWork

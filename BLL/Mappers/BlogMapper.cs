@@ -1,10 +1,5 @@
 ﻿using BLL.DTO;
 using DAL.Entities;
-using DAL.UnitOfWork;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BLL.Mappers
 {

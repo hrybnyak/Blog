@@ -5,7 +5,6 @@ using BLL.Mappers;
 using DAL.Entities;
 using DAL.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -79,9 +78,7 @@ namespace BLL.Services
                         TegId = tegEntity.Id
                     };
                     tegEntity.ArticleTegs.Add(connection);
-                    //articleEntity.ArticleTegs.Add(connection);
                     _unitOfWork.TegRepository.Update(tegEntity);
-                    //_unitOfWork.ArticleRepository.Update(articleEntity);
                     await _unitOfWork.SaveAsync();
                 }
             }

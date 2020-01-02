@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using DAL.Entities;
-using NLog;
 using DAL.Interfaces;
 using DAL.UnitOfWork;
 

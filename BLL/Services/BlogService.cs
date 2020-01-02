@@ -3,12 +3,9 @@ using BLL.Exceptions;
 using BLL.Interfaces;
 using BLL.Mappers;
 using DAL.Interfaces;
-using DAL.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BLL.Services
