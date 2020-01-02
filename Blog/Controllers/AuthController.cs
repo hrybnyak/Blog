@@ -41,7 +41,7 @@ namespace Blog.Controllers
             }
             catch (ArgumentNullException ex)
             {
-                _logger.LogError(ex, "User authentication caused null exception");
+                _logger.LogError(ex, ex.Message);
                 return BadRequest(ex);
             }
             catch (WrongCredentialsException ex)
@@ -51,7 +51,7 @@ namespace Blog.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Exception occurred while user authentication");
+                _logger.LogError(ex, "Error occurred while user authentication");
                 return BadRequest();
             }
         }

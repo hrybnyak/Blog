@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
@@ -19,6 +20,7 @@ namespace DAL.Repositories
             _context = context;
             _dbSet = context.Set<T>();
         }
+
         public void Delete(T entity)
         {
             if (_context.Entry(entity).State == EntityState.Detached)
@@ -36,9 +38,18 @@ namespace DAL.Repositories
         {
             return _dbSet.Find(id);
         }
+
+        public async Task<T> GetByIdAsync(int id)
+        {
+            return await _dbSet.FindAsync(id);
+        }
         public void Insert(T entity)
         {
             _dbSet.Add(entity);
+        }
+        public async Task InsertAsync(T entity)
+        {
+            await _dbSet.AddAsync(entity);
         }
         public virtual IEnumerable<T> Get(
             Expression<Func<T, bool>> filter = null,

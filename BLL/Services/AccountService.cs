@@ -42,7 +42,7 @@ namespace BLL.Services
         private async Task<User> CreateUser(UserDTO userDTO)
         {
             if (await _userManager.FindByEmailAsync(userDTO.Email) != null) throw new EmailIsAlreadyTakenException();
-            if (await _userManager.FindByNameAsync(userDTO.UserName) != null) throw new UsernameIsAlreadyTakenException();
+            if (await _userManager.FindByNameAsync(userDTO.UserName) != null) throw new NameIsAlreadyTakenException();
             if (!CheckPassword(userDTO.Password)) throw new InvalidPasswordException();
             var user = new User
             {
@@ -57,7 +57,7 @@ namespace BLL.Services
         public async Task<UserDTO> RegisterRegularUser(UserDTO userDTO)
         {
             var user = await CreateUser(userDTO);
-            if (user == null) throw new ArgumentNullException("Couldn't create user");
+            if (user == null) throw new ArgumentNullException(nameof(user),"Couldn't create user");
             else {
                 await _userManager.AddToRoleAsync(user, "RegularUser");
             }
@@ -67,7 +67,7 @@ namespace BLL.Services
         public async Task<UserDTO> RegisterModerator(UserDTO userDTO)
         {
             var user = await CreateUser(userDTO);
-            if (user == null) throw new ArgumentNullException("Couldn't create user");
+            if (user == null) throw new ArgumentNullException(nameof(user), "Couldn't create user");
             else
             {
                 await _userManager.AddToRoleAsync(user, "Moderator");
@@ -88,10 +88,10 @@ namespace BLL.Services
         
         public async Task<UserDTO> GetUserById(string id, string token)
         {
-            if (id == null || token == null) throw new ArgumentNullException();
-
+            if (id == null) throw new ArgumentNullException(nameof(id));
+            if (token == null) throw new ArgumentNullException(nameof(token));
             var user = await _userManager.FindByIdAsync(id);
-            if (user == null) throw new ArgumentNullException("Couldn't find user with this id");
+            if (user == null) throw new ArgumentNullException(nameof(user), "Couldn't find user with this id");
 
             var decodedToken = _jwtFactory.GenerateDecodedToken(token);
             string claimsId = decodedToken.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
@@ -120,10 +120,11 @@ namespace BLL.Services
         }
         public async Task<bool> DeleteUser(string id, string token)
         {
-            if (id == null || token == null) throw new ArgumentNullException();
+            if (id == null) throw new ArgumentNullException(nameof(id));
+            if (token == null) throw new ArgumentNullException(nameof(token));
 
             var user = await _userManager.FindByIdAsync(id);
-            if (user == null) throw new ArgumentNullException("Couldn't find user with this id");
+            if (user == null) throw new ArgumentNullException(nameof(user), "Couldn't find user with this id");
 
             var decodedToken = _jwtFactory.GenerateDecodedToken(token);
             string claimsId = decodedToken.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;

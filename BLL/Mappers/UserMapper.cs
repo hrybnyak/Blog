@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BLL.Mappers
 {
-    public class UserMapper : MapperBase<User, UserDTO>
+    public class UserMapper : BaseMapper<User, UserDTO>
     {
         public override User Map(UserDTO element)
         {

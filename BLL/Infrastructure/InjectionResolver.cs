@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using DAL.Entities;
 using NLog;
+using DAL.Interfaces;
+using DAL.UnitOfWork;
 
 namespace BLL.Infrastructure
 {
@@ -28,6 +30,8 @@ namespace BLL.Infrastructure
             services.AddScoped<IJwtFactory, JwtFactory>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IBlogService, BlogService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BLL.Mappers
 { 
-    public abstract class MapperBase<TFirst, TSecond> : IMapper<TFirst, TSecond>
+    public abstract class BaseMapper<TFirst, TSecond> : IMapper<TFirst, TSecond>
     {
         public abstract TFirst Map(TSecond element);
         public abstract TSecond Map(TFirst element);

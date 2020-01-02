@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BLL.DTO;
 using BLL.Exceptions;
@@ -12,17 +14,18 @@ namespace Blog.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    public class AccountController : ControllerBase
+    [Authorize(Roles = "RegularUser")]
+    public class BlogController : ControllerBase
     {
-        private readonly IAccountService _accountService;
-        private readonly ILogger<AccountController> _logger;
+        private readonly IBlogService _blogService;
+        private readonly ILogger<BlogController> _logger;
 
-        public AccountController(IAccountService accountService, ILogger<AccountController> logger)
+        public BlogController(IBlogService accountService, ILogger<BlogController> logger)
         {
             _logger = logger;
-            _accountService = accountService;
+            _blogService = accountService;
         }
+
         private string AuthInfo()
         {
             string accessToken = User.FindFirst("access_token")?.Value;
@@ -33,31 +36,24 @@ namespace Blog.Controllers
         [HttpGet]
         [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetUserById(string id)
+        public IActionResult GetBlogById(int id)
         {
             try
             {
-                var user = await _accountService.GetUserById(id, AuthInfo());
-                if (user == null) throw new ArgumentNullException(nameof(user));
-                _logger.LogInformation("User successfully got information by id");
-                return Ok(user);
+                var blog = _blogService.GetBlogById(id);
+                if (blog == null) throw new ArgumentNullException(nameof(blog));
+                _logger.LogInformation("User successfully got blog information by id");
+                return Ok(blog);
             }
             catch (ArgumentNullException ex)
             {
                 _logger.LogError(ex, ex.Message);
                 return NotFound();
             }
-            catch (NotEnoughtRightsException ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return Forbid();
-            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while user tried to get user info by id");
+                _logger.LogError(ex, "Error occurred while user tried to get blog info by id");
                 throw;
             }
         }
@@ -66,15 +62,15 @@ namespace Blog.Controllers
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateRegularUser([FromBody] UserDTO user)
+        public async Task<IActionResult> CreateBlog([FromBody] BlogDTO blog)
         {
             try
             {
-                var result = await _accountService.RegisterRegularUser(user);
+                var result = await _blogService.CreateBlog(blog, AuthInfo());
                 if (result != null)
                 {
                     _logger.LogInformation("User successfully created an account");
-                    return CreatedAtAction(nameof(GetUserById), new { id = result.Id }, result);
+                    return CreatedAtAction(nameof(GetBlogById), new { id = result.Id }, result);
                 }
                 else throw new ArgumentNullException();
             }
@@ -83,45 +79,28 @@ namespace Blog.Controllers
                 _logger.LogError(ex, ex.Message);
                 return BadRequest();
             }
-            catch (EmailIsAlreadyTakenException ex)
-            {
-                _logger.LogError(ex, "User tried to sign up with email that was alreasy taken");
-                return BadRequest(ex);
-            }
             catch (NameIsAlreadyTakenException ex)
             {
-                _logger.LogError(ex, "User tried to sign up with username that was alreasy taken");
-                return BadRequest(ex);
-            }
-            catch (InvalidPasswordException ex)
-            {
-                _logger.LogError(ex, "User tried to sign up with invalid password");
+                _logger.LogError(ex, "User tried to create blog with name that was already taken");
                 return BadRequest(ex);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while user tried to sign up");
+                _logger.LogError(ex, "Error occurred while user tried to create blog");
                 throw;
             }
         }
 
         [HttpDelete]
-        [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteUser (string id)
+        public IActionResult DeleteBlog([FromBody] BlogDTO blog)
         {
             try
             {
-                bool result = await _accountService.DeleteUser(id, AuthInfo());
-                if (result == true)
-                {
-                    _logger.LogInformation("User succesfully deleted account");
-                    return NoContent();
-                }
-                else return BadRequest();
+                _blogService.DeleteBlog(blog, AuthInfo());
+                 return NoContent();
             }
             catch (ArgumentNullException ex)
             {
@@ -135,9 +114,38 @@ namespace Blog.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while user tried to delete account");
+                _logger.LogError(ex, "Error occurred while user tried to delete blog");
                 throw;
             }
         }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult UpdateBlogName([FromBody] BlogDTO blog)
+        {
+            try
+            {
+                _blogService.UpdateBlogName(blog, AuthInfo());
+                return NoContent();
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return NotFound();
+            }
+            catch (NotEnoughtRightsException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while user tried to delete blog");
+                throw;
+            }
+        }
+
     }
 }

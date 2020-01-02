@@ -11,6 +11,7 @@ namespace DAL.Context
         public DbSet<Article> Articles { get; set; }
         public DbSet<Teg> Tegs { get; set; }
         public DbSet<ArticleTeg> ArticleTegs { get; set; }
+
         public ApplicationDbContext() : base() { }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)

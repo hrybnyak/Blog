@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace DAL.Interfaces
 {
@@ -16,5 +17,7 @@ namespace DAL.Interfaces
         void Insert(T entity);
         void Delete(T entity);
         void Update(T entity);
+        Task<T> GetByIdAsync(int id);
+        Task InsertAsync(T entity);
     }
 }

@@ -29,8 +29,9 @@ namespace BLL.Services
 
         public async Task<ClaimsIdentity> GetClaimsIdentity(UserDTO user)
         {
-            if (user == null) throw new ArgumentNullException();
-            if (user.UserName == null || user.Password == null) throw new ArgumentNullException();
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            if (user.UserName == null) throw new ArgumentNullException(nameof(user.UserName));
+            if (user.Password == null) throw new ArgumentNullException(nameof(user.Password));
             var userToVerify = await _userManager.FindByNameAsync(user.UserName);
             if (userToVerify == null)
             {
@@ -52,11 +53,11 @@ namespace BLL.Services
 
         public async Task<object> Authenticate(UserDTO user)
         {
-            if (user == null) throw new ArgumentNullException();
+            if (user == null) throw new ArgumentNullException(nameof(user));
             var identity = await GetClaimsIdentity(user);
-            if (identity == null) throw new ArgumentNullException();
+            if (identity == null) throw new ArgumentNullException(nameof(identity));
             string token = await _jwtFactory.GenerateEncodedToken(user.UserName, identity);
-            if (token == null) throw new ArgumentNullException();
+            if (token == null) throw new ArgumentNullException(nameof(token));
             return new
             {
                 id = identity.FindFirst(ClaimTypes.NameIdentifier).Value,

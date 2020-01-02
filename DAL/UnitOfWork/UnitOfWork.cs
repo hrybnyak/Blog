@@ -1,16 +1,22 @@
 ﻿using DAL.Context;
 using DAL.Entities;
+using DAL.Interfaces;
 using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DAL.UnitOfWork
 {
-    public class UnitOfWork:IDisposable
+    public class UnitOfWork:IDisposable, IUnitOfWork
     {
-        private ApplicationDbContext _context = new ApplicationDbContext();
+        public UnitOfWork(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        private readonly ApplicationDbContext _context;
         private GenericRepository<Blog> _blogRepository;
         private GenericRepository<Article> _articleRepository;
         private GenericRepository<Comment> _commentRepository;
@@ -66,6 +72,10 @@ namespace DAL.UnitOfWork
         public void Save()
         {
             _context.SaveChanges();
+        }
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
         }
         private bool disposed = false;
         protected virtual void Dispose(bool disposing)
