@@ -11,5 +11,6 @@ namespace BLL.Interfaces
         void UpdateBlogName(BlogDTO blog, string token);
         BlogDTO GetBlogById(int id);
         IEnumerable<BlogDTO> GetAllBlogs();
+        IEnumerable<ArticleDTO> GetAllArticlesByBlogId(int id);
     }
 }

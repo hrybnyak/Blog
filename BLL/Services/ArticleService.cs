@@ -99,7 +99,12 @@ namespace BLL.Services
             await _unitOfWork.SaveAsync();
             await AddTegs(articleEntity, article);
             var result = ArticleMapper.Map(articleEntity);
-            result.Tegs = article.Tegs;
+            if (articleEntity.ArticleTegs != null && articleEntity.ArticleTegs.Count > 0)
+            {
+                result.Tegs = new List<TegDTO>();
+                foreach (ArticleTeg teg in articleEntity.ArticleTegs)
+                    result.Tegs.Add(TegMapper.Map(_unitOfWork.TegRepository.GetById(teg.TegId)));
+            }
             return result;
         }
 
@@ -147,6 +152,32 @@ namespace BLL.Services
                     result.Tegs.Add(TegMapper.Map(_unitOfWork.TegRepository.GetById(teg.TegId)));
             }
             return result;   
+        }
+
+        public ICollection<CommentDTO> GetCommentsByArticleId (int id)
+        {
+            var article = GetArticleById(id);
+            return article.Comments;
+        }
+
+        public ICollection<TegDTO> GetTegsByArticleId (int id)
+        {
+            var article = GetArticleById(id);
+            return article.Tegs;
+        }
+
+        public IEnumerable<ArticleDTO> GetArticlesWihtTextFilter(string filter)
+        {
+            var articles = _unitOfWork.ArticleRepository.Get(a => a.Content.Contains(filter) || a.Name.Contains(filter));
+            if (articles == null) throw new ArgumentNullException(nameof(articles));
+            return ArticleMapper.Map(articles);
+        }
+
+        public IEnumerable<ArticleDTO> GetAllArticles()
+        {
+            var articles = _unitOfWork.ArticleRepository.Get();
+            if (articles == null) throw new ArgumentNullException(nameof(articles));
+            return ArticleMapper.Map(articles);
         }
     }
 }

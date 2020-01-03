@@ -9,8 +9,7 @@ namespace BLL.DTO
         public string UserName { get; set; }
         [EmailAddress]
         public string Email { get; set; }
-        [MinLength(6)]
+        [RegularExpression(@"^.*(?=.{6,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(^[a-zA-Z0-9@\$=!:.#%]+$)")]
         public string Password { get; set; }
-
     }
 }

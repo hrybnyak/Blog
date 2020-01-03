@@ -31,18 +31,17 @@ namespace Blog.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetUserById(string id)
+        public async Task<IActionResult> GetUser()
         {
             try
             {
-                var user = await _accountService.GetUserById(id, AuthInfo());
+                var user = await _accountService.GetUserById(AuthInfo());
                 if (user == null) throw new ArgumentNullException(nameof(user));
-                _logger.LogInformation("User successfully got information by id");
+                _logger.LogInformation("User successfully got information about himself");
                 return Ok(user);
             }
             catch (ArgumentNullException ex)
@@ -57,7 +56,7 @@ namespace Blog.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while user tried to get user info by id");
+                _logger.LogError(ex, "Error occurred while user tried to get user info");
                 throw;
             }
         }
@@ -74,7 +73,7 @@ namespace Blog.Controllers
                 if (result != null)
                 {
                     _logger.LogInformation("User successfully created an account");
-                    return CreatedAtAction(nameof(GetUserById), new { id = result.Id }, result);
+                    return CreatedAtAction(nameof(GetUser), result);
                 }
                 else throw new ArgumentNullException();
             }
@@ -93,11 +92,6 @@ namespace Blog.Controllers
                 _logger.LogError(ex, "User tried to sign up with username that was alreasy taken");
                 return BadRequest(ex);
             }
-            catch (InvalidPasswordException ex)
-            {
-                _logger.LogError(ex, "User tried to sign up with invalid password");
-                return BadRequest(ex);
-            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while user tried to sign up");
@@ -106,16 +100,14 @@ namespace Blog.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteUser (string id)
+        public async Task<IActionResult> DeleteUser()
         {
             try
             {
-                bool result = await _accountService.DeleteUser(id, AuthInfo());
+                bool result = await _accountService.DeleteUser(AuthInfo());
                 if (result == true)
                 {
                     _logger.LogInformation("User succesfully deleted account");
@@ -128,14 +120,69 @@ namespace Blog.Controllers
                 _logger.LogError(ex, ex.Message);
                 return NotFound();
             }
-            catch (NotEnoughtRightsException ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return Forbid();
-            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while user tried to delete account");
+                throw;
+            }
+        }
+
+        [HttpPut]
+        [Route("username")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateUsername([FromBody] UserDTO dto)
+        {
+            try
+            {
+                await _accountService.UpdateUsername(dto, AuthInfo());
+                _logger.LogInformation("User succesfully updated his username");
+                return NoContent();
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return NotFound();
+            }
+            catch (NameIsAlreadyTakenException ex)
+            {
+                _logger.LogError(ex, "User tried to change username to the one that was already taken");
+                return BadRequest(ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while user tried to unpdate username");
+                throw;
+            }
+        }
+
+        [HttpPut]
+        [Route("password")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdatePassword([FromBody] PasswordDTO dto)
+        {
+            try
+            {
+                await _accountService.ChangePassword(dto, AuthInfo());
+                _logger.LogInformation("User successfully updated password");
+                return NoContent();
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogError(ex, "User entered incorrect current password");
+                return BadRequest(ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while user tried to update passport");
                 throw;
             }
         }

@@ -21,7 +21,7 @@ namespace BLL.Infrastructure
                 o.Password.RequiredLength = 6;
                 o.Password.RequireLowercase = true;
                 o.Password.RequireUppercase = true;
-                o.Password.RequireDigit = false;
+                o.Password.RequireDigit = true;
                 o.Password.RequireNonAlphanumeric = false;
             }).AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
@@ -32,6 +32,8 @@ namespace BLL.Infrastructure
             services.AddScoped<IBlogService, BlogService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IArticleService, ArticleService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<ITegService, TegService>();
         }
     }
 }

@@ -10,7 +10,12 @@ namespace BLL.Interfaces
         Task<UserDTO> RegisterModerator(UserDTO userDTO);
         Task<IEnumerable<UserDTO>> GetAllRegularUsers();
         Task<IEnumerable<UserDTO>> GetAllUsers();
+        Task<IEnumerable<UserDTO>> GetAllModerators();
         Task<UserDTO> GetUserById(string id, string token);
-        Task<bool> DeleteUser(string id, string token);
+        Task<UserDTO> GetUserById(string token);
+        Task<bool> DeleteUser(string token);
+        Task<bool> DeleteModerator(string id, string token);
+        Task UpdateUsername(UserDTO user, string token);
+        Task ChangePassword(PasswordDTO password, string token);
     }
 }

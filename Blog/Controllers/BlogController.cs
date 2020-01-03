@@ -80,8 +80,32 @@ namespace Blog.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("{id}/articles")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetArticlesByBlogId(int id)
+        {
+            try
+            {
+                var articles = _blogService.GetAllArticlesByBlogId(id);
+                if (articles == null) throw new ArgumentNullException(nameof(articles));
+                _logger.LogInformation("User successfully got all articles from blog by id");
+                return Ok(articles);
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while user tried to get articles from blog by id");
+                throw;
+            }
+        }
+
         [HttpPost]
-        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "RegularUser")]
@@ -92,7 +116,7 @@ namespace Blog.Controllers
                 var result = await _blogService.CreateBlog(blog, AuthInfo());
                 if (result != null)
                 {
-                    _logger.LogInformation("User successfully created an account");
+                    _logger.LogInformation("User successfully created a blog");
                     return CreatedAtAction(nameof(GetBlogById), new { id = result.Id }, result);
                 }
                 else throw new ArgumentNullException();

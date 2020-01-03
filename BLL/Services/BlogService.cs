@@ -112,5 +112,11 @@ namespace BLL.Services
             return BlogMapper.Map(_unitOfWork.BlogRepository.Get());
         }
 
+        public IEnumerable<ArticleDTO> GetAllArticlesByBlogId(int id)
+        {
+            var blog = GetBlogById(id);
+            return blog.Articles;
+        }
+
     }
 }
