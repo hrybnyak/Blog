@@ -36,11 +36,11 @@ namespace Blog.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-        public IActionResult GetArticleById(int id)
+        public async Task<IActionResult> GetArticleById(int id)
         {
             try
             {
-                var article = _articleService.GetArticleById(id);
+                var article = await _articleService.GetArticleById(id);
                 if (article == null) throw new ArgumentNullException(nameof(article));
                 _logger.LogInformation("User successfully got article information by id");
                 return Ok(article);
@@ -225,11 +225,11 @@ namespace Blog.Controllers
         [Route("{id}/tegs")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetArticlesTegs(int id)
+        public async Task<IActionResult> GetArticlesTegs(int id)
         {
             try
             {
-                var tegs = _articleService.GetTegsByArticleId(id);
+                var tegs = await _articleService.GetTegsByArticleId(id);
                 if (tegs == null) throw new ArgumentNullException(nameof(tegs));
                 _logger.LogInformation("User successfully got all tegs of article by article id");
                 return Ok(tegs);
@@ -250,11 +250,11 @@ namespace Blog.Controllers
         [Route("{id}/comments")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetArticlesComments(int id)
+        public async Task<IActionResult> GetArticlesComments(int id)
         {
             try
             {
-                var comments = _articleService.GetCommentsByArticleId(id);
+                var comments =await _articleService.GetCommentsByArticleId(id);
                 if (comments == null) throw new ArgumentNullException(nameof(comments));
                 _logger.LogInformation("User successfully all comments of article by article id");
                 return Ok(comments);

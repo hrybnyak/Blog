@@ -130,14 +130,17 @@ namespace BLL.Services
             if (article.Name == null) throw new ArgumentNullException(nameof(article.Name));
             if (article.Content == null) throw new ArgumentNullException(nameof(article.Content));
 
-            string ownerId = _unitOfWork.BlogRepository.GetById(article.BlogId.GetValueOrDefault()).OwnerId;
+            string ownerId = (await _unitOfWork.BlogRepository.GetByIdAsync(article.BlogId.GetValueOrDefault())).OwnerId;
             if (ownerId.CompareTo(_jwtFactory.GetUserIdClaim(token)) != 0) throw new NotEnoughtRightsException();
             var articleEntity = ArticleMapper.Map(article);
             articleEntity.LastUpdate = DateTime.Now;
+
             await _unitOfWork.ArticleRepository.InsertAsync(articleEntity);
             await _unitOfWork.SaveAsync();
             await AddTegs(articleEntity, article);
+
             var result = ArticleMapper.Map(articleEntity);
+
             if (articleEntity.ArticleTegs != null && articleEntity.ArticleTegs.Count > 0)
             {
                 result.Tegs = new List<TegDTO>();
@@ -177,43 +180,42 @@ namespace BLL.Services
             _unitOfWork.Save();
         }
 
-        public ArticleDTO GetArticleById(int id)
+        public async Task<ArticleDTO> GetArticleById(int id)
         {
             var article = _unitOfWork.ArticleRepository.Get(a => a.Id == id, includeProperties: "Comments,ArticleTegs").FirstOrDefault();
             if (article == null) throw new ArgumentNullException(nameof(article));
             var result = ArticleMapper.Map(article);
+
             if (article.Comments!=null && article.Comments.Count > 0) 
             {
                 result.Comments = new List<CommentDTO>();
                 foreach (Comment comment in article.Comments)
                 {
                     CommentDTO dto = CommentMapper.Map(comment);
-                    dto.CreatorUsername = _userManager.FindByIdAsync(comment.UserId).Result.UserName;
+                    dto.CreatorUsername = (await _userManager.FindByIdAsync(comment.UserId)).UserName;
                     result.Comments.Add(dto);
                 }
             }
-
-            
-            result.AuthorId = _unitOfWork.BlogRepository.GetById(article.BlogId).OwnerId;
-            result.AuthorUsername = _userManager.FindByIdAsync(result.AuthorId).Result.UserName;
+            result.AuthorId = (await _unitOfWork.BlogRepository.GetByIdAsync(article.BlogId)).OwnerId;
+            result.AuthorUsername = (await _userManager.FindByIdAsync(result.AuthorId)).UserName;
             if (article.ArticleTegs != null && article.ArticleTegs.Count > 0)
             {
                 result.Tegs = new List<TegDTO>();
                 foreach (ArticleTeg teg in article.ArticleTegs)
-                    result.Tegs.Add(TegMapper.Map(_unitOfWork.TegRepository.GetById(teg.TegId)));
+                    result.Tegs.Add(TegMapper.Map(await _unitOfWork.TegRepository.GetByIdAsync(teg.TegId)));
             }
             return result;   
         }
 
-        public ICollection<CommentDTO> GetCommentsByArticleId (int id)
+        public async Task<ICollection<CommentDTO>> GetCommentsByArticleId (int id)
         {
-            var article = GetArticleById(id);
+            var article = await GetArticleById(id);
             return article.Comments;
         }
 
-        public ICollection<TegDTO> GetTegsByArticleId (int id)
+        public async Task<ICollection<TegDTO>> GetTegsByArticleId (int id)
         {
-            var article = GetArticleById(id);
+            var article = await GetArticleById(id);
             return article.Tegs;
         }
 

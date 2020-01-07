@@ -9,9 +9,9 @@ namespace BLL.Interfaces
         Task<ArticleDTO> CreateArticle(ArticleDTO article, string token);
         void DeleteArticle(int id, string token);
         void UpdateArticle(int id, ArticleDTO article, string token);
-        ArticleDTO GetArticleById(int id);
-        ICollection<TegDTO> GetTegsByArticleId(int id);
-        ICollection<CommentDTO> GetCommentsByArticleId(int id);
+        Task<ArticleDTO> GetArticleById(int id);
+        Task<ICollection<TegDTO>> GetTegsByArticleId(int id);
+        Task<ICollection<CommentDTO>> GetCommentsByArticleId(int id);
         IEnumerable<ArticleDTO> GetArticlesWihtTextFilter(string filter);
         IEnumerable<ArticleDTO> GetAllArticles();
         IEnumerable<ArticleDTO> GetArticlesWithTegFilter(IEnumerable<TegDTO> tegs);

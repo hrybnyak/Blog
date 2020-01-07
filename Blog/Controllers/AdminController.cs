@@ -97,7 +97,7 @@ namespace Blog.Controllers
             {
                 var user = await _accountService.GetUserById(id, AuthInfo());
                 if (user == null) throw new ArgumentNullException(nameof(user));
-                _logger.LogInformation("User successfully got information about himself");
+                _logger.LogInformation("User successfully got information about other user");
                 return Ok(user);
             }
             catch (ArgumentNullException ex)
@@ -147,7 +147,7 @@ namespace Blog.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while user tried to delete account");
+                _logger.LogError(ex, "Error occurred while admin tried to delete moderator");
                 throw;
             }
         }
@@ -164,7 +164,7 @@ namespace Blog.Controllers
                 var result = await _accountService.RegisterModerator(user);
                 if (result != null)
                 {
-                    _logger.LogInformation("User successfully created an account");
+                    _logger.LogInformation("Admin successfully created a moderator account");
                     return CreatedAtAction(nameof(GetUserById), new { id = result.Id }, result);
                 }
                 else throw new ArgumentNullException();
@@ -176,17 +176,17 @@ namespace Blog.Controllers
             }
             catch (EmailIsAlreadyTakenException ex)
             {
-                _logger.LogError(ex, "User tried to sign up with email that was alreasy taken");
+                _logger.LogError(ex, "Admin tried to created a moderator account with email that was alreasy taken");
                 return BadRequest(ex);
             }
             catch (NameIsAlreadyTakenException ex)
             {
-                _logger.LogError(ex, "User tried to sign up with username that was alreasy taken");
+                _logger.LogError(ex, "Admin tried to created a moderator account with username that was alreasy taken");
                 return BadRequest(ex);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while user tried to sign up");
+                _logger.LogError(ex, "Error occurred while admin tried to create a moderator account");
                 throw;
             }
         }

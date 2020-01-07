@@ -74,7 +74,7 @@ namespace Blog.Controllers
             {
                 var blogs = await _accountService.GetAllBlogsByUserId(id);
                 if (blogs == null) throw new ArgumentNullException(nameof(blogs));
-                _logger.LogInformation("User successfully got information about himself");
+                _logger.LogInformation("User successfully got information about his blogs");
                 return Ok(blogs);
             }
             catch (ArgumentNullException ex)
@@ -84,7 +84,7 @@ namespace Blog.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while user tried to get user info");
+                _logger.LogError(ex, "Error occurred while user tried to get info about his blogs");
                 throw;
             }
         }
@@ -101,7 +101,7 @@ namespace Blog.Controllers
             {
                 var comments = await _accountService.GetAllCommentsByUserId(id);
                 if (comments == null) throw new ArgumentNullException(nameof(comments));
-                _logger.LogInformation("User successfully got information about himself");
+                _logger.LogInformation("User successfully got information about his comments");
                 return Ok(comments);
             }
             catch (ArgumentNullException ex)
@@ -111,7 +111,7 @@ namespace Blog.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while user tried to get user info");
+                _logger.LogError(ex, "Error occurred while user tried to get info about his comments");
                 throw;
             }
         }
