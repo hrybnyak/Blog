@@ -1,0 +1,7 @@
+<h4 class="display-4">All blog users</h4>
+<hr />
+<div class="row-auto" *ngIf="this.users !== null">
+    <div class="list-group mb-4">
+        <app-user-list-item *ngFor="let user of users" [user]="user"></app-user-list-item>
+    </div>
+</div>

@@ -10,7 +10,8 @@ namespace BLL.Mappers
             return new BlogDTO
             {
                 Id = element.Id,
-                Name = element.Name
+                Name = element.Name,
+                OwnerId = element.OwnerId
             };
         }
 

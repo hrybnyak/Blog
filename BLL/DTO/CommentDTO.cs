@@ -10,6 +10,7 @@ namespace BLL.DTO
         public string Content { get; set; }
         [Required]
         public int? ArticleId { get; set; }
+        public string CreatorId { get; set; }
         public string CreatorUsername { get; set; }
         public DateTime LastUpdate { get; set; }
     }

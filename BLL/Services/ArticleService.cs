@@ -4,6 +4,7 @@ using BLL.Interfaces;
 using BLL.Mappers;
 using DAL.Entities;
 using DAL.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace BLL.Services
         private ArticleMapper _articleMapper;
         private TegMapper _tegMapper;
         private CommentMapper _commentMapper;
-
+        private UserManager<User> _userManager;
         private ArticleMapper ArticleMapper
         {
             get
@@ -52,10 +53,11 @@ namespace BLL.Services
                 return _tegMapper;
             }
         }
-        public ArticleService(IUnitOfWork unitOfWork, IJwtFactory jwtFactory)
+        public ArticleService(IUnitOfWork unitOfWork, IJwtFactory jwtFactory, UserManager<User> userManager)
         {
             _unitOfWork = unitOfWork;
             _jwtFactory = jwtFactory;
+            _userManager = userManager;
         }
 
         private async Task AddTegs(Article articleEntity, ArticleDTO article)
@@ -84,12 +86,49 @@ namespace BLL.Services
             }
         }
 
+        public IEnumerable<ArticleDTO> GetArticlesWithTegFilter(string tegs)
+        {
+            if (tegs == null) throw new ArgumentNullException(nameof(tegs));
+            List<TegDTO> teg = new List<TegDTO>();
+            string[] names = tegs.Split(',');
+            foreach(string name in names)
+            {
+                teg.Add(new TegDTO { Name = name });
+            }
+            return GetArticlesWithTegFilter(teg);
+        }
+
+        public IEnumerable<ArticleDTO> GetArticlesWithTegFilter(IEnumerable<TegDTO> tegs)
+        {
+            IEnumerable<Article> articles = _unitOfWork.ArticleRepository.Get(includeProperties: "ArticleTegs");
+            List<Article> result = new List<Article>();
+            foreach (TegDTO teg in tegs)
+            {
+                Teg tegEntity;
+                if (teg.Name != null)
+                {
+                    tegEntity = _unitOfWork.TegRepository.Get(t => t.Name == teg.Name).FirstOrDefault();
+                    if (tegEntity == null) throw new ArgumentNullException(nameof(tegEntity));
+                }
+                else
+                {
+                    throw new ArgumentNullException(nameof(teg));
+                }
+                var filtered = articles.Where(a => a.ArticleTegs.Contains(a.ArticleTegs.Where(at=>at.ArticleId == a.Id && at.TegId == tegEntity.Id).FirstOrDefault()));
+                foreach (Article article in filtered) {
+                    if (!result.Contains(article))
+                    {
+                        result.Add(article);
+                    }
+                }
+            }
+            return ArticleMapper.Map(result);
+        }
         public async Task<ArticleDTO> CreateArticle(ArticleDTO article, string token)
         {
             if (article == null) throw new ArgumentNullException(nameof(article));
             if (article.Name == null) throw new ArgumentNullException(nameof(article.Name));
             if (article.Content == null) throw new ArgumentNullException(nameof(article.Content));
-            if (article.BlogId == null) throw new ArgumentNullException(nameof(article.BlogId));
 
             string ownerId = _unitOfWork.BlogRepository.GetById(article.BlogId.GetValueOrDefault()).OwnerId;
             if (ownerId.CompareTo(_jwtFactory.GetUserIdClaim(token)) != 0) throw new NotEnoughtRightsException();
@@ -108,30 +147,29 @@ namespace BLL.Services
             return result;
         }
 
-        public void DeleteArticle(ArticleDTO article, string token)
+        public void DeleteArticle(int id, string token)
         {
-            if (article == null) throw new ArgumentNullException(nameof(article));
-            if (article.BlogId == null) throw new ArgumentNullException(nameof(article));
-            if (article.Id == null) throw new ArgumentNullException(nameof(article));
-            string ownerId = _unitOfWork.BlogRepository.GetById(article.BlogId.GetValueOrDefault()).OwnerId;
+            if (token == null) throw new ArgumentNullException(nameof(token));
+            var entity = _unitOfWork.ArticleRepository.GetById(id);
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+            string ownerId = _unitOfWork.BlogRepository.GetById(entity.BlogId).OwnerId;
             if (ownerId.CompareTo(_jwtFactory.GetUserIdClaim(token)) != 0)
             {
                 if (_jwtFactory.GetUserRoleClaim(token).CompareTo("Moderator") != 0 ) throw new NotEnoughtRightsException();
             }
-            var entity = _unitOfWork.ArticleRepository.GetById(article.Id.GetValueOrDefault());
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             _unitOfWork.ArticleRepository.Delete(entity);
             _unitOfWork.Save();
          }
 
-        public void UpdateArticle(ArticleDTO article, string token)
+        public void UpdateArticle(int id, ArticleDTO article, string token)
         {
+            if (token == null) throw new ArgumentNullException(nameof(token));
             if (article == null) throw new ArgumentNullException(nameof(article));
-            if (article.BlogId == null) throw new ArgumentNullException(nameof(article));
-            if (article.Id == null) throw new ArgumentNullException(nameof(article));
-            string ownerId = _unitOfWork.BlogRepository.GetById(article.BlogId.GetValueOrDefault()).OwnerId;
+            var entity = _unitOfWork.ArticleRepository.GetById(id);
+            if (entity == null) throw new ArgumentNullException(nameof(article));
+            string ownerId = _unitOfWork.BlogRepository.GetById(entity.BlogId).OwnerId;
             if (ownerId.CompareTo(_jwtFactory.GetUserIdClaim(token)) != 0) throw new NotEnoughtRightsException();
-            var entity = _unitOfWork.ArticleRepository.GetById(article.Id.GetValueOrDefault());
             entity.Name = article.Name;
             entity.Content = article.Content;
             entity.LastUpdate = DateTime.Now;
@@ -145,9 +183,22 @@ namespace BLL.Services
             if (article == null) throw new ArgumentNullException(nameof(article));
             var result = ArticleMapper.Map(article);
             if (article.Comments!=null && article.Comments.Count > 0) 
-            result.Comments = CommentMapper.Map(article.Comments).ToList();
+            {
+                result.Comments = new List<CommentDTO>();
+                foreach (Comment comment in article.Comments)
+                {
+                    CommentDTO dto = CommentMapper.Map(comment);
+                    dto.CreatorUsername = _userManager.FindByIdAsync(comment.UserId).Result.UserName;
+                    result.Comments.Add(dto);
+                }
+            }
+
+            
+            result.AuthorId = _unitOfWork.BlogRepository.GetById(article.BlogId).OwnerId;
+            result.AuthorUsername = _userManager.FindByIdAsync(result.AuthorId).Result.UserName;
             if (article.ArticleTegs != null && article.ArticleTegs.Count > 0)
             {
+                result.Tegs = new List<TegDTO>();
                 foreach (ArticleTeg teg in article.ArticleTegs)
                     result.Tegs.Add(TegMapper.Map(_unitOfWork.TegRepository.GetById(teg.TegId)));
             }

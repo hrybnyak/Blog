@@ -56,18 +56,14 @@ namespace BLL.Services
             commentEntity.LastUpdated = DateTime.Now;
 
             await _unitOfWork.CommentRepository.InsertAsync(commentEntity);
-
+            await _unitOfWork.SaveAsync();
             var result = CommentMapper.Map(commentEntity);
             result.CreatorUsername = user.UserName;
             return result;
         }
-        public void DeleteComment (CommentDTO comment, string token)
+        public void DeleteComment (int id, string token)
         {
-            if (comment == null) throw new ArgumentNullException(nameof(comment));
-            if (token == null) throw new ArgumentNullException(nameof(token));
-            if (comment.Id == null) throw new ArgumentNullException(nameof(comment.Id));
-            
-            var entity = _unitOfWork.CommentRepository.GetById(comment.Id.GetValueOrDefault());
+            var entity = _unitOfWork.CommentRepository.GetById(id);
             if (entity == null) throw new ArgumentNullException(nameof(entity), "Comment wasn't found");
             string userId = _jwtFactory.GetUserIdClaim(token);
             if (userId == null) throw new ArgumentNullException(nameof(userId));
@@ -79,13 +75,12 @@ namespace BLL.Services
             _unitOfWork.CommentRepository.Delete(entity);
             _unitOfWork.Save();
         }
-        public void UpdateComment (CommentDTO comment, string token)
+        public void UpdateComment (int id, CommentDTO comment, string token)
         {
             if (comment == null) throw new ArgumentNullException(nameof(comment));
             if (token == null) throw new ArgumentNullException(nameof(token));
-            if (comment.Id == null) throw new ArgumentNullException(nameof(comment.Id));
 
-            var entity = _unitOfWork.CommentRepository.GetById(comment.Id.GetValueOrDefault());
+            var entity = _unitOfWork.CommentRepository.GetById(id);
             if (entity == null) throw new ArgumentNullException(nameof(entity), "Comment wasn't found");
             string userId = _jwtFactory.GetUserIdClaim(token);
             if (userId == null) throw new ArgumentNullException(nameof(userId));
@@ -101,14 +96,23 @@ namespace BLL.Services
         {
             var comment = await _unitOfWork.CommentRepository.GetByIdAsync(id);
             if (comment == null) throw new ArgumentNullException(nameof(comment));
-            return CommentMapper.Map(comment);
+            var result = CommentMapper.Map(comment);
+            result.CreatorUsername = (await _userManager.FindByIdAsync(comment.UserId)).UserName;
+            return result;
         }
 
         public IEnumerable<CommentDTO> GetAllComments()
         {
             var comments = _unitOfWork.CommentRepository.Get();
             if (comments == null) throw new ArgumentNullException(nameof(comments));
-            return CommentMapper.Map(comments);
+            List<CommentDTO> result = new List<CommentDTO>();
+            foreach(Comment comment in comments)
+            {
+                var dto = CommentMapper.Map(comment);
+                dto.CreatorUsername = _userManager.FindByIdAsync(comment.UserId).Result.UserName;
+                result.Add(dto);
+            }
+            return result;
         }
     }
 }

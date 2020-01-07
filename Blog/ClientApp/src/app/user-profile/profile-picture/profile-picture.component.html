@@ -1,0 +1,9 @@
+<img src="//placehold.it/150" id="profile-picture" class="img-fluid rounded-circle d-block mb-4" alt="avatar">
+<input type="file" id="file" #fileInput>
+<button class="btn btn-outline-success" (click)="fileInput.click()">Choose file</button>
+<div *ngIf="loading">Loading...</div>
+<div *ngIf="!loading">
+    <h5 class="text-danger mt-4">{{this.loggedUser.userName}}</h5>
+    <p><span class="text-danger">{{this.blogsCount}}</span> Blogs</p>
+    <p><span class="text-danger">{{this.commentsCount}}</span> Comments</p>
+</div>

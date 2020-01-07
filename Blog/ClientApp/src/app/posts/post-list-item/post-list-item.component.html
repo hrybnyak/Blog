@@ -1,0 +1,18 @@
+<div routerLink="/posts/view/{{post.id}}"
+  class="list-group-item list-group-item-action flex-column align-items-start mb-2" id="post-data-container">
+  <div class="d-flex w-100 justify-content-between align-items-center">
+    <h3 class="mb-1 font-weight-normal">{{ post.name.substr(0, 70) }}{{ post.name.length > 70 ? '...' : null }}</h3>
+    <h5>
+      <small class="text-muted">{{ post.lastUpdate | date:format }}</small>
+    </h5>
+  </div>
+  <div class="d-flex w-100 justify-content-between">
+    <p class="mb-1 lead">{{ post.content.substr(0, 90) }}{{ post.content.length > 90 ? '...' : null }}</p>
+    <div class="btn-group">
+      <button type="button" class="btn btn-outline-success" (click)="redirectToEdit()"
+        *ngIf="(this.authService.getId() == post.authorId)">Edit</button>
+      <button type="button" class="btn btn-outline-danger" (click)="deletePost($event, post.id)"
+        *ngIf="((this.authService.getId() == post.authorId) || this.authService.isModerator())">Delete</button>
+    </div>
+  </div>
+</div>

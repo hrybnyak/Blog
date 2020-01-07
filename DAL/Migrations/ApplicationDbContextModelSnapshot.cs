@@ -336,13 +336,13 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.Article", "Article")
                         .WithMany("ArticleTegs")
                         .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DAL.Entities.Teg", "Teg")
                         .WithMany("ArticleTegs")
                         .HasForeignKey("TegId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

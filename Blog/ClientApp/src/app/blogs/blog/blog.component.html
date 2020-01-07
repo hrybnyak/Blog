@@ -1,0 +1,17 @@
+<div class="mt-4">
+    <h4>{{ mode === 'create' ? 'Create' : 'Edit'}} blog</h4>
+    <hr />
+    <form #blogForm="ngForm">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" id="title" [(ngModel)]="blog.name" name="title" #title="ngModel" placeholder="Title"
+          required minlength="5" maxlength="500">
+        <div class="text-danger" *ngIf="title.invalid && (title.touched || title.dirty)">
+          Title is required and it should be between 5 and 500 characters.
+        </div>
+       <hr/> 
+      <div class="text-right">
+        <button *ngIf="mode === 'create'" type="submit" class="btn btn-outline-primary" (click)="createBlog()" [disabled]="blogForm.form.invalid">Create</button>
+        <button *ngIf="mode === 'edit'" type="submit" class="btn btn-outline-success" (click)="editBlog()" [disabled]="blogForm.form.invalid || blogForm.form.pristine">Edit</button>
+      </div>
+  </div>

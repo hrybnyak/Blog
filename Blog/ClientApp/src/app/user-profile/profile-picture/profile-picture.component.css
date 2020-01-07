@@ -1,0 +1,11 @@
+#profile-picture {
+    margin: auto;
+}
+
+#file {
+    display: none;
+}
+
+button.btn-outline-success {
+    width: 100%;
+}

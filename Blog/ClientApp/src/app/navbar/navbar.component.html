@@ -1,0 +1,43 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <a class="navbar-brand" routerLink="{{this.paths.Home}}" [routerLinkActiveOptions]="{exact: true}"
+    routerLinkActive="active">Blog</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="navbar-collapse collapse justify-content-stretch" id="navbar">
+    <ul class="navbar-nav">
+    </ul>
+    <ul class="navbar-nav ml-auto" *ngIf="!authService.isLogged()">
+      <li class="nav-item">
+        <a routerLink="{{this.paths.Register}}" class="nav-link">Register</a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="{{this.paths.Login}}" class="nav-link">Log in</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto" *ngIf="authService.isLogged()">
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+        *ngIf="authService.isRegularUser()">
+        <a class="nav-link" routerLink="{{this.paths.Blogs}}">My blogs</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+        *ngIf="authService.isAdmin()">
+        <a class="nav-link" routerLink="{{this.paths.AdminModerators}}">Moderators</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+        *ngIf="authService.isAdmin()">
+        <a class="nav-link" routerLink="{{this.paths.AdminUsers}}">Users</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+        *ngIf="authService.isModerator()">
+        <a class="nav-link" routerLink="{{this.paths.ModeratorUsers}}">Users</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <a class="nav-link" routerLink="{{this.paths.Profile}}">My profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link logout" (click)="authService.logout()">Log out</a>
+      </li>
+    </ul>
+  </div>
+</nav>

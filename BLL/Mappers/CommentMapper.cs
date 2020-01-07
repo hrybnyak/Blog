@@ -20,7 +20,8 @@ namespace BLL.Mappers
                 Id = element.Id,
                 Content = element.Content,
                 LastUpdate = element.LastUpdated,
-                ArticleId = element.ArticleId
+                ArticleId = element.ArticleId,
+                CreatorId = element.UserId
             };
         }
     }

@@ -1,0 +1,21 @@
+<div class="comments-container list-group mt-2" *ngFor="let comment of comments; let i = index">
+  <div href="#" class="list-group-item flex-column align-items-start">
+    <div class="heading d-flex justify-content-between">
+      <div class="content-section">
+        <h4 *ngIf="comment.creatorUsername"><span class="badge badge-secondary">{{ comment.creatorUsername }}</span>
+        </h4>
+        <p class="mb-1 lead">{{ comment.content }}</p>
+      </div>
+      <div *ngIf="(this.authService.getId() === comment.creatorId || this.authService.isModerator())">
+        <button type="submit" class="btn btn-outline-danger ml-auto" (click)="deleteComment(comment, i)">
+          Delete
+        </button>
+      </div>
+    </div>
+    <div class="text-right">
+      <h5 class="text-muted">
+        <small class="mr-auto"> Last updated on: {{ comment.lastUpdate | date: format }}</small>
+      </h5>
+    </div>
+  </div>
+</div>

@@ -51,32 +51,6 @@ namespace BLL.Services
             return TegMapper.Map(_unitOfWork.TegRepository.Get());
         }
 
-        public IEnumerable<ArticleDTO> GetArticlesByTeg(IEnumerable<TegDTO> tegs)
-        {
-            List<Article> articles = new List<Article>();
-            foreach (TegDTO teg in tegs) {
-                Teg tegEntity;
-                if (teg.Id != null)
-                {
-                    tegEntity = _unitOfWork.TegRepository.GetById(teg.Id.GetValueOrDefault());
-                    if (tegEntity == null) throw new ArgumentNullException(nameof(tegEntity));
-                }
-                else if (teg.Name != null)
-                {
-                    tegEntity = _unitOfWork.TegRepository.Get(t => t.Name == teg.Name).FirstOrDefault();
-                    if (tegEntity == null) throw new ArgumentNullException(nameof(tegEntity));
-
-                }
-                else
-                {
-                    throw new ArgumentNullException(nameof(teg));
-                }
-                articles.AddRange(_unitOfWork.ArticleRepository.Get(a => a.ArticleTegs
-                .Contains(new ArticleTeg { ArticleId = a.Id, TegId = tegEntity.Id })));
-                }
-            return ArticleMapper.Map(articles);
-        }
-
         public async Task<TegDTO> GetTegById(int id)
         {
             var teg = await _unitOfWork.TegRepository.GetByIdAsync(id);

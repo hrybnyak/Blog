@@ -33,7 +33,7 @@ namespace Blog.Controllers
 
 
         [HttpGet]
-        [Route("moderator")]
+        [Route("moderators")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -59,7 +59,7 @@ namespace Blog.Controllers
             }
         }
 
-        [Route("user")]
+        [Route("users")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -86,7 +86,7 @@ namespace Blog.Controllers
         }
 
         [HttpGet]
-        [Route("user/{id}")]
+        [Route("users/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -118,16 +118,16 @@ namespace Blog.Controllers
         }
 
         [HttpDelete]
-        [Route("moderator")]
+        [Route("moderators/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteModerator([FromBody] string id)
+        public async Task<IActionResult> DeleteModerator(string id)
         {
             try
             {
-                bool result = await _accountService.DeleteModerator(id, AuthInfo());
+                bool result = await _accountService.DeleteUser(id, AuthInfo());
                 if (result == true)
                 {
                     _logger.LogInformation("Admin succesfully deleted moderator");
@@ -154,7 +154,7 @@ namespace Blog.Controllers
 
 
         [HttpPost]
-        [Route("moderator")]
+        [Route("moderators")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateModerator([FromBody] UserDTO user)

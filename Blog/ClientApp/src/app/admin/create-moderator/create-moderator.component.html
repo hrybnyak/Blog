@@ -1,0 +1,46 @@
+<div class="heading mt-4">
+  <h2 class="display-2">Create new moderator</h2>
+</div>
+<hr>
+<div class="form-container mt-2">
+  <form #authForm="ngForm">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" [(ngModel)]="name" name="nameControl" #nameControl="ngModel"
+        placeholder="nickname">
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" email class="form-control" id="email" [(ngModel)]="email" name="email"
+        placeholder="john@doe.com" required>
+      <div class="text-danger" *ngIf="email.invalid && (email.dirty || email.touched)">
+        The email is invalid
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" class="form-control" id="password" [(ngModel)]="password" name="password" #pw="ngModel"
+        placeholder="******" required pattern="^.*(?=.{6,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(^[a-zA-Z0-9@\$=!:.#%]+$)">
+      <small id="passwordHelpBlock" class="form-text text-muted">
+        Your password must be 6 characters long, contain letters and numbers, can contain special characters and must
+        not contain spaces, or emoji.
+      </small>
+    </div>
+    <div class="text-danger" *ngIf="password.invalid && (password.dirty || password.touched)">
+      The password is required, password has to contain at least one digit, one upper-case letter and one lower-case
+      letter and be 6 character long
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" class="form-control" id="confirmPassword" [(ngModel)]="confirmPassword" name="pwConfirm"
+        #pwConfirm="ngModel" required compare="password" placeholder="******">
+      <div class="text-danger" *ngIf="pwConfirm.invalid && (pwConfirm.dirty || pwConfirm.touched)">
+        <div *ngIf="pwConfirm.errors['required']">Confirm password is required</div>
+        <div *ngIf="pwConfirm.errors['compare']">Passwords do not match</div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-outline-primary" (click)="register()" [disabled]="authForm.form.invalid">
+      Register
+    </button>
+  </form>
+</div>

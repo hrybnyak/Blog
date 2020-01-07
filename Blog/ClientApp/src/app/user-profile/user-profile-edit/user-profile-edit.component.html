@@ -1,0 +1,19 @@
+<form #editProfileForm="ngForm">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" [(ngModel)]="user.userName" name="nameControl"
+      #nameControl="ngModel" required>
+  </div>
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" class="form-control" id="email" [(ngModel)]="user.email" name="email"
+      #email="ngModel" required>
+    <div class="text-danger" *ngIf="email.invalid && (email.dirty || email.touched)">
+      The email is invalid
+    </div>
+  </div>
+  <div class="text-right">
+    <button type="submit" class="btn btn-outline-primary" (click)="changeUserData()"
+      [disabled]="editProfileForm.form.invalid">Edit</button>
+  </div>
+</form>

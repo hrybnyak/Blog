@@ -1,0 +1,30 @@
+<div *ngIf="post" class="mb-4">
+  <div class="card mt-4">
+    <div class="card-header post-data-container d-flex w-100 justify-content-between align-items-center">
+      <h3 class="font-weight-normal">{{ post.name }}</h3>
+      <div class="btn-group">
+        <button type="button" class="btn btn-outline-success" (click)="redirectToEditPost()"
+          *ngIf="post.authorId === this.authService.getId()">Edit</button>
+        <button type="button" class="btn btn-outline-danger" (click)="deletePost()"
+          *ngIf="post.authorId === this.authService.getId() || this.authService.isModerator()">Delete</button>
+      </div>
+
+    </div>
+    <div class="card-body">
+      <p class="card-text lead">{{ post.content }}</p>
+    </div>
+    <div class="card-footer text-muted">
+      <div class="row">
+        <div class="col-md-4 col-xs-12 bordered">Author: {{ post.authorUsername }}</div>
+        <div class="col-md-4 col-xs-12 bordered text-center">
+          Last updated on: {{ post.lastUpdate | date: format }}
+        </div>
+        <div class="col-md-4 col-xs-12">Tegs: {{ categories }}</div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="this.authService.isLogged() && this.authService.isRegularUser()">
+    <app-add-comment (commentAdded)="onCommentAdded($event)"></app-add-comment>
+  </div>
+  <app-comment-list [comments]="post.comments"></app-comment-list>
+</div>

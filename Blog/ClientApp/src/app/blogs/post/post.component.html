@@ -1,0 +1,35 @@
+<div class="mt-4">
+  <h4>{{ mode === 'create' ? 'Create' : 'Edit'}} post</h4>
+  <hr />
+  <form #postForm="ngForm">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" class="form-control" id="title" [(ngModel)]="post.name" name="title" #title="ngModel"
+        placeholder="Title" required minlength="5" maxlength="100">
+      <div class="text-danger" *ngIf="title.invalid && (title.touched || title.dirty)">
+        Title is required and it should be between 5 and 100 characters.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="content">Content</label>
+      <textarea class="form-control" id="content" [(ngModel)]="post.content" name="content" #content="ngModel"
+        placeholder="Content goes here..." rows="5" required minlength="5" maxlength="1000"></textarea>
+      <div class="text-danger" *ngIf="content.invalid && (content.touched || content.dirty)">
+        Content is required and it should be between 5 and 1000 characters.
+      </div>
+    </div>
+
+    <div class="form-group" *ngIf="mode === 'create'">
+      <label for="categories">Tegs (should be separated by comma) </label>
+      <textarea class="form-control" id="categories" [(ngModel)]="this.categoriesString" name="categoriesString"
+        #categories="ngModel" placeholder="Tegs go here..." minlength="0" maxlength="1000"></textarea>
+    </div>
+
+    <div class="text-right">
+      <button *ngIf="mode === 'create'" type="submit" class="btn btn-outline-primary" (click)="createPost()"
+        [disabled]="postForm.form.invalid">Create</button>
+      <button *ngIf="mode === 'edit'" type="submit" class="btn btn-outline-success" (click)="editPost()"
+        [disabled]="postForm.form.invalid || postForm.form.pristine">Edit</button>
+    </div>
+  </form>
+</div>

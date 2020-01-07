@@ -9,6 +9,7 @@ namespace BLL.DTO
         [Required]
         [MaxLength(500)]
         public string Name { get; set; }
+        public string OwnerId { get; set; }
         public string OwnerUsername { get; set; }
         public IEnumerable<ArticleDTO> Articles {get; set;}
     }

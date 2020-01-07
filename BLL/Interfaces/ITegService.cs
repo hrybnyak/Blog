@@ -10,6 +10,5 @@ namespace BLL.Interfaces
     {
         IEnumerable<TegDTO> GetAllTegs();
         Task<TegDTO> GetTegById(int id);
-        IEnumerable<ArticleDTO> GetArticlesByTeg(IEnumerable<TegDTO> teg);
     }
 }

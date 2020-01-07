@@ -49,13 +49,13 @@ namespace DAL.Context
                 .HasOne<Article>(at => at.Article)
                 .WithMany(a => a.ArticleTegs)
                 .HasForeignKey(at => at.ArticleId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ArticleTeg>()
                 .HasOne<Teg>(at => at.Teg)
                 .WithMany(t => t.ArticleTegs)
                 .HasForeignKey(at => at.TegId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

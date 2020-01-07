@@ -1,0 +1,17 @@
+<div *ngIf="loading">Loading...</div>
+<div *ngIf="!loading">
+    <h2 class="display-3">{{this.loggedUser.userName}}'s blogs: </h2>
+    <hr>
+    <div class="list-group mb-4" *ngIf="this.userBlogs.length !== 0">
+        <app-blog-list-item *ngFor="let blog of userBlogs" [blog]="blog" (blogDeleted)="onBlogDeleted($event)">
+        </app-blog-list-item>
+    </div>
+    <h4 class="display-4" *ngIf="this.userBlogs === undefined">
+        You blog's are loading!
+    </h4>
+    <h4 class="display-4" *ngIf="this.userBlogs.length == 0">
+        You don't have any blogs yet, you should create one!
+    </h4>
+    <hr>
+    <a class="btn btn-primary btn-lg" routerLink="create" role="button">Create new blog</a>
+</div>

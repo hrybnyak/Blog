@@ -12,6 +12,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 
 namespace Blog
 {
@@ -25,8 +26,12 @@ namespace Blog
         public void ConfigureServices(IServiceCollection services)
         {
             InjectionResolver.Inject(services, Configuration.GetConnectionString("BloggingDatabase"));
-
-            services.AddCors();
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
             services.AddControllers();
             services.AddSwaggerDocument();
             
@@ -71,7 +76,6 @@ namespace Blog
                 {
                     OnTokenValidated = context =>
                     {
-                        // Add the access_token as a claim, as we may actually need it
                         var accessToken = context.SecurityToken as JwtSecurityToken;
                         if (accessToken != null)
                         {
@@ -87,11 +91,17 @@ namespace Blog
                 };
                 configureOptions.SaveToken = true;
             });
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
+            });
         }
 
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            app.UseCors("MyPolicy");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -104,19 +114,30 @@ namespace Blog
             app.UseAuthentication();
             app.UseAuthorization();
 
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
-            app.UseCors(x => x
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
+            if (!env.IsDevelopment())
+            {
+                app.UseSpaStaticFiles();
+            };
+
 
             app.UseOpenApi();
             app.UseSwaggerUi3();
-            
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseAngularCliServer(npmScript: "start");
+                }
+            });
         }
     }
 }

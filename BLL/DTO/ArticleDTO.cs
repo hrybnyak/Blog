@@ -16,6 +16,8 @@ namespace BLL.DTO
         public DateTime LastUpdate { get; set; }
         [Required]
         public int? BlogId { get; set; }
+        public string AuthorId { get; set; }
+        public string AuthorUsername { get; set; }
         public ICollection<CommentDTO> Comments { get; set; }
         public ICollection<TegDTO> Tegs { get; set; }
     }

@@ -1,0 +1,15 @@
+<div class="mb-4 mt-4">
+  <form #commentForm="ngForm">
+    <div class="form-group">
+      <textarea class="form-control" id="comment" rows="3" [(ngModel)]="commentContent" name="comment" required #comment="ngModel" placeholder="Add a comment..." maxlength="400"></textarea>
+      <div class="text-danger" *ngIf="comment.invalid && (comment.dirty || comment.touched)">
+        The comment should be atleast 5 symbols and no more than 400 symbols long
+      </div>
+    </div>
+    <div class="form-group text-right">
+      <button type="submit" class="btn btn-outline-primary ml-auto" (click)="addComment(); commentForm.reset()" 
+      [disabled]="commentForm.invalid">Comment</button>
+    </div>
+  </form>
+</div>
+<hr>

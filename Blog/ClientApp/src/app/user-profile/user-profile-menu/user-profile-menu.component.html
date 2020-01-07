@@ -1,0 +1,16 @@
+<ngb-tabset [justify]="'justified'">
+  <ngb-tab id="edit" title="Edit">
+    <ng-template ngbTabContent>
+      <app-user-profile-edit>
+      </app-user-profile-edit>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="change-password" title="Change Password">
+    <ng-template ngbTabContent>
+      <p>
+        <app-change-password>
+        </app-change-password>
+      </p>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

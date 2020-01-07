@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BLL.DTO
 {
@@ -11,5 +12,7 @@ namespace BLL.DTO
         public string Email { get; set; }
         [RegularExpression(@"^.*(?=.{6,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(^[a-zA-Z0-9@\$=!:.#%]+$)")]
         public string Password { get; set; }
+        public IEnumerable<BlogDTO> Blogs { get; set; }
+        public IEnumerable<CommentDTO> Comments { get; set; }
     }
 }
