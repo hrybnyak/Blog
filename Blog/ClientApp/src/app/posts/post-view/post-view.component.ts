@@ -47,6 +47,7 @@ export class PostViewComponent implements OnInit {
   }
     return result;
   }
+  
   onCommentAdded(comment: Comment): void {
     this.post.comments.unshift(comment);
   }

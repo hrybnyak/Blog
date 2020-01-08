@@ -15,16 +15,21 @@
     </div>
 </form>
 </div>
-<div class="row-auto" *ngIf="!loading && this.posts !== null">
+<div class="row-auto" *ngIf="!loading && this.posts !== null && !error_message">
 <div class="list-group mb-4">
   <app-post-list-item *ngFor="let post of posts" [post]="post" (postDeleted)="onPostDeleted($event)"></app-post-list-item>
 </div>
 <app-pagination [pageIndex]="pageIndex" [itemsCount]="postsCount" [itemsPerPage]="itemsPerPage"></app-pagination>
 </div>
-<div *ngIf="!loading && (this.posts === null || this.posts.length === 0)">
+<div *ngIf="!loading && (this.posts === null || this.posts.length === 0) && !error_message">
   <h5 class="dispay-4">
       Sorry, couldn't find any posts with this search options!
   </h5>
+</div>
+<div *ngIf='error_message'>
+  <h5 class="dispay-4">
+  {{this.error_message}}
+</h5>
 </div>
 <div *ngIf="loading">
   Loading...

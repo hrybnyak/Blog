@@ -22,6 +22,7 @@ export class PostsComponent implements OnInit {
   itemsPerPage: number = 10;
   postsCount: number = 0;
   loading: boolean = true;
+  error_message: string = '';
 
   constructor(private dataService: DataService, private route: ActivatedRoute, private postService: PostService, private rendered: Renderer) { }
 
@@ -42,30 +43,42 @@ export class PostsComponent implements OnInit {
   getPosts(): void {
     if (this.search === "")
     {
-      this.dataService.getItems<Post>(ApiPaths.Posts).subscribe(res => {
+      this.dataService.getItems<Post>(ApiPaths.Posts).subscribe((res) => {
       this.posts = res.slice((this.pageIndex-1)*this.itemsPerPage, this.itemsPerPage*this.pageIndex-1);
       this.postsCount = this.posts.length;
       this.loading = false;
+      this.error_message = '';
+    },
+    (error) => {
+      this.error_message = "Sorry, couldn't find any posts!";
     });}
     else if(this.mode === "text"){
       this.loading = true;
-      this.postService.getPostsWithTextFilter(this.search).subscribe(res => {
+      this.postService.getPostsWithTextFilter(this.search).subscribe((res) => {
         if (res.length != 0){
         this.posts = res.slice((this.pageIndex-1)*this.itemsPerPage, this.itemsPerPage*this.pageIndex-1);
         this.postsCount = this.posts.length;
+        this.error_message = '';
         }
         else {this.posts = null}
         this.loading = false;
+      }, 
+      (error) => {
+        this.error_message = "Sorry, couldn't find any posts with this tegs!";
       })
     }
     else if(this.mode === "teg"){
-      this.postService.getPostsWithTegFilter(this.search).subscribe(res => {
+      this.postService.getPostsWithTegFilter(this.search).subscribe((res) => {
         if (res.length != 0){
         this.posts = res.slice((this.pageIndex-1)*this.itemsPerPage, this.itemsPerPage*this.pageIndex-1);
         this.postsCount = this.posts.length;
+        this.error_message = '';
         }
         else {this.posts = null}
-      })
+      }, 
+        (error) => {
+          this.error_message = "Sorry, couldn't find any posts with this tegs!";
+        })
     }
   }
 
