@@ -5,4 +5,5 @@ and you can try to run them separatly. This project was made for learning purpos
  - Entity Framework Core on Data Layer
  - Swagger
  - Logging with Nlog
+ - Jwt-token authentication and Role-based authorization
  
