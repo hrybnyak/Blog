@@ -55,7 +55,7 @@ namespace BLL.Services
             commentEntity.UserId = userId;
             commentEntity.LastUpdated = DateTime.Now;
 
-            await _unitOfWork.CommentRepository.InsertAsync(commentEntity);
+            _unitOfWork.CommentRepository.Insert(commentEntity);
             await _unitOfWork.SaveAsync();
             var result = CommentMapper.Map(commentEntity);
             result.CreatorUsername = user.UserName;

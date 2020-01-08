@@ -71,7 +71,7 @@ namespace BLL.Services
                     {
                         tegEntity = TegMapper.Map(teg);
                         tegEntity.ArticleTegs = new List<ArticleTeg>();
-                        await _unitOfWork.TegRepository.InsertAsync(tegEntity);
+                        _unitOfWork.TegRepository.Insert(tegEntity);
                         await _unitOfWork.SaveAsync();
                     }
                     var connection = new ArticleTeg
@@ -135,7 +135,7 @@ namespace BLL.Services
             var articleEntity = ArticleMapper.Map(article);
             articleEntity.LastUpdate = DateTime.Now;
 
-            await _unitOfWork.ArticleRepository.InsertAsync(articleEntity);
+            _unitOfWork.ArticleRepository.Insert(articleEntity);
             await _unitOfWork.SaveAsync();
             await AddTegs(articleEntity, article);
 

@@ -62,7 +62,7 @@ namespace BLL.Services
             var blogEntity = BlogMapper.Map(blog);
             blogEntity.OwnerId = claimsId;
 
-            await _unitOfWork.BlogRepository.InsertAsync(blogEntity);
+            _unitOfWork.BlogRepository.Insert(blogEntity);
             await _unitOfWork.SaveAsync();
             blogEntity = _unitOfWork.BlogRepository.Get(b => b.Name == blog.Name, includeProperties:"Owner").FirstOrDefault();
             if (blogEntity == null) throw new ArgumentNullException(nameof(blogEntity));

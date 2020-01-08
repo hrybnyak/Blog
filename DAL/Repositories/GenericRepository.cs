@@ -47,10 +47,6 @@ namespace DAL.Repositories
         {
             _dbSet.Add(entity);
         }
-        public async Task InsertAsync(T entity)
-        {
-            await _dbSet.AddAsync(entity);
-        }
         public virtual IEnumerable<T> Get(
             Expression<Func<T, bool>> filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,

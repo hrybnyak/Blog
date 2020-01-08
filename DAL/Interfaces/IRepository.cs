@@ -18,6 +18,5 @@ namespace DAL.Interfaces
         void Delete(T entity);
         void Update(T entity);
         Task<T> GetByIdAsync(int id);
-        Task InsertAsync(T entity);
     }
 }
