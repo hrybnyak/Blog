@@ -13,11 +13,11 @@
     </div>
 </div>
 <hr/>
-<div class="list-group mb-4" *ngIf="this.blog.articles !== undefined && this.blog.articles.length !== 0">
+<div class="list-group mb-4" *ngIf="this.blog.articles !== undefined && this.blog.articles !== null && this.blog.articles.length !== 0">
     <app-post-list-item *ngFor="let post of blog.articles" [post]="post" (postDeleted)="onPostDeleted($event)"></app-post-list-item>
     <app-pagination [pageIndex]="pageIndex" [itemsCount]="postsCount" [itemsPerPage]="itemsPerPage"></app-pagination>
 </div>
-<div *ngIf="blog.articles === undefined || blog.articles.length == 0">
+<div *ngIf="blog.articles === undefined || blog.articles === null || blog.articles.length == 0">
     <h2 class="display-4">Sorry, but you don't have any posts, maybe you should write one.</h2>
 </div>
 </div> 
