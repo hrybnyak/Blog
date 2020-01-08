@@ -42,5 +42,8 @@
     <button type="submit" class="btn btn-outline-primary" (click)="register()" [disabled]="authForm.form.invalid">
       Register
     </button>
+    <div class="text-danger" *ngIf="this.error">
+      {{this.error}}
+  </div>
   </form>
 </div>

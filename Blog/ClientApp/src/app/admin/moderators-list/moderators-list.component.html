@@ -1,17 +1,17 @@
 <div *ngIf="!loading">
     <h2 class="display-3">All Moderators: </h2>
     <hr>
-    <div class="list-group mb-4" *ngIf="this.moderators.length !== 0">
+    <div class="list-group mb-4" *ngIf="!this.error && this.moderators.length !== 0">
         <app-moderators-list-item *ngFor="let moderator of moderators" [user]="moderator"
             (moderatorDeleted)="onModeratorDeleted($event)">
         </app-moderators-list-item>
     </div>
-    <h4 class="display-4" *ngIf="this.moderators === undefined">
-        Moderators's are loading!
-    </h4>
-    <h4 class="display-4" *ngIf="this.moderators.length == 0">
+    <h4 class="display-4" *ngIf="!this.error && this.moderators.length == 0">
         There are no moderators!
     </h4>
+    <div class="text-danger" *ngIf="this.error">
+        {{this.error}}
+    </div>
     <hr>
     <a class="btn btn-primary btn-lg" routerLink="create" role="button">Create new moderator</a>
 </div>

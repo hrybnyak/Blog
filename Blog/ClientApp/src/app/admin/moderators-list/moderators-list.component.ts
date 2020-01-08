@@ -15,6 +15,7 @@ export class ModeratorsListComponent implements OnInit {
 
   moderators: User[];
   loading: boolean = true;
+  error:string = ''
 
   constructor(private dataService: DataService, private router: Router) { }
 
@@ -23,6 +24,9 @@ export class ModeratorsListComponent implements OnInit {
       this.moderators = data;
       console.log(this.moderators);
       this.loading = false;
+    },
+    (error) => {
+      this.error = "Couldn't get moderators list";
     });
   }
 

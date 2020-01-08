@@ -83,7 +83,11 @@ export class AuthService {
       this.setToken(data.auth_token);
       this.setId(data.id)
       this.router.navigateByUrl(ApplicationPaths.Home);
+    },
+    (error) => {
+      result = error;
     });
+    
     return result;
   }
 

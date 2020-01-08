@@ -47,5 +47,10 @@
       [disabled]="authForm.form.invalid">
       Login
     </button>
+    
+    <div class="text-danger" *ngIf="this.error">
+      {{this.error}}
+  </div>
+    <br/>
   </form>
 </div>

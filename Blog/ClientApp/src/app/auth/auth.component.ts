@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { User } from '../models/user';
+import { AuthResponse } from '../models/auth-response';
 
 @Component({
   selector: 'app-auth',
@@ -14,6 +15,7 @@ export class AuthComponent implements OnInit {
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
+  error: string = '';
 
   constructor(private route: ActivatedRoute, private router: Router, private authService: AuthService) { }
 
@@ -36,6 +38,9 @@ export class AuthComponent implements OnInit {
   private registerUser(user: { UserName: string, Email: string, Password: string }): any {
     this.authService.createAccount(user).subscribe((data: User) => {
       if (data !== null || data !== undefined) this.authService.login({ UserName: data.userName, Password: user.Password });
+    },
+    (error) => {
+      this.error = "Sign up failed, please try to change email or name, because they might be already taken";
     });
   }
 
@@ -45,7 +50,11 @@ export class AuthComponent implements OnInit {
       UserName: this.name,
       Password: this.password
     };
-    this.authService.login(user);
+    let result = this.authService.login(user);
+    if (typeof(result) !== typeof(AuthResponse))
+    {
+      this.error = "Authentication failed, please make sure your creditentials are correct.";
+    }
   }
 
   private checkMode() {

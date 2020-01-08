@@ -13,6 +13,7 @@ export class CreateModeratorComponent implements OnInit {
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
+  error:string = '';
 
   constructor(private router: Router, private dataService: DataService) { }
 
@@ -28,6 +29,9 @@ export class CreateModeratorComponent implements OnInit {
     };
     this.dataService.createItem(ApiPaths.AdminModerators, user).subscribe(()=>{
     this.router.navigateByUrl(ApiPaths.AdminModerators)
+    },
+    (error) => {
+        this.error = "Couldn't create moderator account, please make sure the username and email haven't been taken already."
     });
   }
 

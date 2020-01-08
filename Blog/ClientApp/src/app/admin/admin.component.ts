@@ -10,9 +10,12 @@ import { ApiPaths } from '../app.constants';
 })
 export class AdminComponent implements OnInit {
   users: User[];
+  error: string ='';
   constructor(private dataService: DataService) { }
 
+
   ngOnInit() {
-    this.dataService.getItems<User>(ApiPaths.AdminUsers).subscribe((data: User[]) => this.users = data);
+    this.dataService.getItems<User>(ApiPaths.AdminUsers).subscribe((data: User[]) => this.users = data,
+    (error) => this.error = "Couldn't load users' data");
   }
 }
