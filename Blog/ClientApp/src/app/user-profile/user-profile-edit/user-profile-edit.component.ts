@@ -12,6 +12,8 @@ import { ApplicationPaths } from 'src/app/app.constants';
 })
 export class UserProfileEditComponent implements OnInit {
   user: User = <User>{}
+  error: string = ''
+  
   constructor(private authService: AuthService, private userService: UserService, private router: Router) { }
 
   ngOnInit() {
@@ -22,7 +24,8 @@ export class UserProfileEditComponent implements OnInit {
 
   changeUserData() {
     console.log(this.user);
-    this.userService.editUserInfo(this.authService.getId(), this.user).subscribe();
+    this.userService.editUserInfo(this.authService.getId(), this.user).subscribe(() => this.error = '',
+    err => this.error = "Couldn't update user data, try other email or username, these might be already taken.");
     this.router.navigateByUrl(ApplicationPaths.Profile);
   }
 }

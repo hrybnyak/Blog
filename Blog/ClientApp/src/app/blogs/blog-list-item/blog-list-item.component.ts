@@ -15,7 +15,7 @@ export class BlogListItemComponent implements OnInit {
 
   @Input() blog: Blog;
   @Output() blogDeleted: EventEmitter<number> = new EventEmitter<number>();
-
+  error: string = ''
   constructor(private dataService: DataService,
     private router: Router) { }
 
@@ -24,6 +24,8 @@ export class BlogListItemComponent implements OnInit {
 
   deleteBlog(event, blogId: number) {
     event.stopPropagation();
-    this.dataService.deleteItem(ApiPaths.Blogs, blogId).subscribe(res => this.blogDeleted.emit(blogId));
+    this.dataService.deleteItem(ApiPaths.Blogs, blogId).subscribe(res => {this.blogDeleted.emit(blogId);
+    this.error = ''},
+    err => this.error = "Couldn't delete this post");
   }
 }

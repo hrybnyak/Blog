@@ -22,6 +22,7 @@ export class BlogViewComponent implements OnInit {
   constructor(private dataService: DataService,
     private route: ActivatedRoute,
     private router: Router) { }
+  error: string = ''
 
 
   ngOnInit() {
@@ -34,7 +35,9 @@ export class BlogViewComponent implements OnInit {
         })
       }
       this.loading = false;
-    });
+      this.error= '';
+    },
+    (error) => this.error = "Couldn't get your blog");
   }
 
   onPostDeleted(postId: number): void {
@@ -52,7 +55,8 @@ export class BlogViewComponent implements OnInit {
 
   deleteBlog(blogId: number) {
     event.stopPropagation();
-    this.dataService.deleteItem(ApiPaths.Blogs, blogId).subscribe();
+    this.dataService.deleteItem(ApiPaths.Blogs, blogId).subscribe(() => { this.error = ''},
+    () => this.error = "Couldn't delete this blog");
     this.router.navigateByUrl(ApplicationPaths.Blogs);
   }
 }

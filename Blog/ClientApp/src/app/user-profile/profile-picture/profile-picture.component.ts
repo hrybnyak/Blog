@@ -20,21 +20,29 @@ export class ProfilePictureComponent implements OnInit {
   commentsCount: number;
   blogsCount: number;
   loading: boolean = true;
+  error: string = ''
 
   getUser() {
     this.authService.getLoggedUser().subscribe((data: User) => {
       this.loggedUser = data;
-    })
+      this.error = ''
+    },
+    err => this.error = "Couldn't get logged user info"
+    )
   }
   getUserComments() {
-    this.userService.getUserComments(this.authService.getId()).subscribe((data: Comment[]) => this.commentsCount = data.length);
+    this.userService.getUserComments(this.authService.getId()).subscribe((data: Comment[]) => {this.commentsCount = data.length,
+    this.error = ''},
+    err => this.error = "Couldn't get user comment count");
     console.log(this.commentsCount);
   }
   getUserBlogs(): Subscription {
     return this.userService.getUserBlogs(this.authService.getId()).subscribe((data: Blog[]) => {
       this.blogsCount = data.length;
       this.loading = false;
-    })
+      this.error = ''
+    },
+    err => this.error = "Couldn't get user blog count")
   }
   ngOnInit() {
     this.getUser();

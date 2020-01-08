@@ -14,4 +14,7 @@
         <button *ngIf="mode === 'create'" type="submit" class="btn btn-outline-primary" (click)="createBlog()" [disabled]="blogForm.form.invalid">Create</button>
         <button *ngIf="mode === 'edit'" type="submit" class="btn btn-outline-success" (click)="editBlog()" [disabled]="blogForm.form.invalid || blogForm.form.pristine">Edit</button>
       </div>
+      <div class='text-danger' *ngIf="error">
+        {{this.error}}
+      </div>
   </div>

@@ -11,9 +11,11 @@ import { ApiPaths } from '../app.constants';
 export class ModeratorComponent implements OnInit {
   users: User[];
   constructor(private dataService: DataService) { }
+  error: string = '';
 
   ngOnInit() {
-    this.dataService.getItems<User>(ApiPaths.ModeratorUsers).subscribe((data: User[]) => this.users = data);
+    this.dataService.getItems<User>(ApiPaths.ModeratorUsers).subscribe((data: User[]) => this.users = data,
+    err => this.error = "Couldn't get list of users");
   }
 
 }

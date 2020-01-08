@@ -30,6 +30,9 @@
         [disabled]="postForm.form.invalid">Create</button>
       <button *ngIf="mode === 'edit'" type="submit" class="btn btn-outline-success" (click)="editPost()"
         [disabled]="postForm.form.invalid || postForm.form.pristine">Edit</button>
+      <div class="text-danger" *ngIf="this.error">
+          {{this.error}}
+      </div>
     </div>
   </form>
 </div>

@@ -19,6 +19,7 @@ export class PostComponent implements OnInit {
   mode: string = 'create';
   id: any;
   blogId: number;
+  error : string = '';
 
 
   constructor(private dataService: DataService,
@@ -35,7 +36,8 @@ export class PostComponent implements OnInit {
   }
 
   editPost(): void {
-    this.dataService.editItem<Post>(ApiPaths.Posts, this.id, this.post).subscribe(res => this.redirectToPostView());
+    this.dataService.editItem<Post>(ApiPaths.Posts, this.id, this.post).subscribe(res => this.redirectToPostView(),
+    err => this.error = "Sorry, couldn't update this article");
   }
 
   createPost(): void {
@@ -48,7 +50,8 @@ export class PostComponent implements OnInit {
     this.dataService.createItem<Post>(ApiPaths.Posts, data).subscribe(post => {
       this.id = post.id
       this.redirectToPostView();
-    });
+    },
+    (error) => this.error = "Sorry, couldn't create this post");
   }
 
   private redirectToPostView(): void {

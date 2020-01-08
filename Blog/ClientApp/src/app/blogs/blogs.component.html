@@ -6,8 +6,8 @@
         <app-blog-list-item *ngFor="let blog of userBlogs" [blog]="blog" (blogDeleted)="onBlogDeleted($event)">
         </app-blog-list-item>
     </div>
-    <h4 class="display-4" *ngIf="this.userBlogs === undefined">
-        You blog's are loading!
+    <h4 class="display-4" *ngIf="this.error">
+       {{this.error}}
     </h4>
     <h4 class="display-4" *ngIf="this.userBlogs.length == 0">
         You don't have any blogs yet, you should create one!

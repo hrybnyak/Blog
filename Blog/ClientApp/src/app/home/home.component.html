@@ -1,7 +1,8 @@
-<div class="jumbotron bg-white text-center" *ngIf="!loading">
+<div class="jumbotron bg-white text-center" *ngIf="!loading && !error">
   <h1 class="display-4">Hello, {{ authService.isLogged() ? this.loggedUser.userName : 'Anonymous User' }}!</h1>
   <p class="lead">This is a simple blog, created for learning purposes. I hope you'll enjoy it!</p>
   <hr class="my-4">
   <app-posts> </app-posts>
 </div>
 <div *ngIf="loading">loading...</div>
+<div *ngIf="error"></div>

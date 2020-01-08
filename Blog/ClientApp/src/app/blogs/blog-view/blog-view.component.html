@@ -1,5 +1,8 @@
 <div *ngIf="loading">Loading...</div>
-<div class="jumbotron bg-white text-center" *ngIf = "!loading">
+<div class="text-danger" *ngIf="this.error">
+    {{this.error}}
+</div>
+<div class="jumbotron bg-white text-center" *ngIf = "!loading  && !error">
 <h2 class="display-2">{{this.blog.name}}</h2>
 <div class="row">
     <div class="col-sm">

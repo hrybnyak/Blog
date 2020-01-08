@@ -13,13 +13,15 @@ import { ApplicationPaths } from 'src/app/app.constants';
 export class ChangePasswordComponent implements OnInit {
   password: Password = <Password>{};
   confirmPassword = '';
+  error: string = ''
 
   constructor(private userService: UserService, private authService: AuthService, private router: Router) { }
 
   ngOnInit() { }
 
   changePassword() {
-    this.userService.changePassword(this.authService.getId(), this.password).subscribe();
+    this.userService.changePassword(this.authService.getId(), this.password).subscribe(() => this.error = '',
+    err => this.error = "Couldn't update user password, make sure your entered your old password correctly");
     this.router.navigateByUrl(ApplicationPaths.Profile);
   }
 

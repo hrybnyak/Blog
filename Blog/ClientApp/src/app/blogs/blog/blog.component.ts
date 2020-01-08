@@ -15,6 +15,7 @@ export class BlogComponent implements OnInit {
   blog: Blog = <Blog>{};
   mode: string = 'create';
   id: any;
+  error: string = '';
 
   constructor(private dataService: DataService,
     private route: ActivatedRoute,
@@ -28,7 +29,8 @@ export class BlogComponent implements OnInit {
   }
 
   editBlog(): void {
-    this.dataService.editItem<Blog>(ApiPaths.Blogs, this.id, this.blog).subscribe(res => this.redirectToBlogsPage());
+    this.dataService.editItem<Blog>(ApiPaths.Blogs, this.id, this.blog).subscribe(res => {this.error = ''; this.redirectToBlogsPage()},
+    err => this.error = "Couldn't update blog");
   }
 
   createBlog(): void {
@@ -38,8 +40,10 @@ export class BlogComponent implements OnInit {
 
     this.dataService.createItem<Blog>(ApiPaths.Blogs, data).subscribe(post => {
       this.id = post.id
+      this.error = '';
       this.redirectToBlogsPage();
-    });
+    },
+    err => this.error = "Couldn't create blog");
   }
 
   private redirectToBlogsPage(): void {

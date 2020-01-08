@@ -7,6 +7,9 @@
         <p class="mb-1 lead">{{ comment.content }}</p>
       </div>
       <div *ngIf="(this.authService.getId() === comment.creatorId || this.authService.isModerator())">
+        <div class='text-danger' *ngIf="error">
+          {{this.error}}
+        </div>
         <button type="submit" class="btn btn-outline-danger ml-auto" (click)="deleteComment(comment, i)">
           Delete
         </button>

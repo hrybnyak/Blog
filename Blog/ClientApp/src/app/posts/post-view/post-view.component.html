@@ -1,6 +1,9 @@
 <div *ngIf="post" class="mb-4">
   <div class="card mt-4">
     <div class="card-header post-data-container d-flex w-100 justify-content-between align-items-center">
+      <div class='text-danger' *ngIf="error">
+        {{this.error}}
+      </div>
       <h3 class="font-weight-normal">{{ post.name }}</h3>
       <div class="btn-group">
         <button type="button" class="btn btn-outline-success" (click)="redirectToEditPost()"

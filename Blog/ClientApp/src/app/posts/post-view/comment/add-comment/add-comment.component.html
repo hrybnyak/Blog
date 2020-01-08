@@ -10,6 +10,9 @@
       <button type="submit" class="btn btn-outline-primary ml-auto" (click)="addComment(); commentForm.reset()" 
       [disabled]="commentForm.invalid">Comment</button>
     </div>
+    <div class='text-danger' *ngIf="error">
+      {{this.error}}
+    </div>
   </form>
 </div>
 <hr>

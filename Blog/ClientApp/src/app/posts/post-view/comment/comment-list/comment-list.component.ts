@@ -12,7 +12,7 @@ import { User } from 'src/app/models/user';
 })
 export class CommentListComponent implements OnInit {
   @Input() comments: Comment[] = [];
-
+  error: string = '';
 
   constructor(private dataService: DataService, private authService: AuthService) { }
 
@@ -22,6 +22,8 @@ export class CommentListComponent implements OnInit {
   deleteComment(comment: Comment, index: number) {
     this.dataService.deleteItem(ApiPaths.Comments, comment.id).subscribe(res => {
       this.comments.splice(index, 1);
-    });
+      this.error = ''
+    },
+    err => this.error = "Couldn't delete comment");
   }
 }

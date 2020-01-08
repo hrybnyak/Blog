@@ -3,6 +3,9 @@
 <button class="btn btn-outline-success" (click)="fileInput.click()">Choose file</button>
 <div *ngIf="loading">Loading...</div>
 <div *ngIf="!loading">
+    <div class='text-danger' *ngIf="error">
+        {{this.error}}
+      </div>
     <h5 class="text-danger mt-4">{{this.loggedUser.userName}}</h5>
     <p><span class="text-danger">{{this.blogsCount}}</span> Blogs</p>
     <p><span class="text-danger">{{this.commentsCount}}</span> Comments</p>

@@ -1,3 +1,4 @@
+<div *ngIf="!error">
 <h4 class="display-4">All blog users</h4>
 <hr />
 <div class="row-auto" *ngIf="this.users !== null">
@@ -5,3 +6,7 @@
         <app-user-list-item *ngFor="let user of users" [user]="user"></app-user-list-item>
     </div>
 </div>
+</div>
+<div class='text-danger' *ngIf="error">
+    {{this.error}}
+  </div>

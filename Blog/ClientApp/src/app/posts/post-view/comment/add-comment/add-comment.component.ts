@@ -16,6 +16,7 @@ export class AddCommentComponent implements OnInit {
   @Output() commentAdded: EventEmitter<Comment> = new EventEmitter<Comment>();
   commentContent: string = '';
   authorEmail: string = null;
+  error: string = '';
 
   constructor(private dataService: DataService, 
               private route: ActivatedRoute, 
@@ -34,6 +35,8 @@ export class AddCommentComponent implements OnInit {
     this.dataService.createItem<Comment>(ApiPaths.Comments, commentData).subscribe(comment => {
       this.commentAdded.emit(comment);
       this.commentContent = '';
-    });
+      this.error = ''
+    },
+    err => this.error = "Couldn't create comment");
   }
 }

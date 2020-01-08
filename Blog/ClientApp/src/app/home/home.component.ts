@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 export class HomeComponent implements OnInit {
   loggedUser: User;
   loading: Boolean = true;
-
+  error: string = '';
   constructor(private authService: AuthService) {
    }
 
@@ -25,7 +25,9 @@ export class HomeComponent implements OnInit {
     this.authService.getLoggedUser().subscribe((data: User) => {
       this.loggedUser = data;
       this.loading = false;
-    })
+      this.error = '';
+    }, 
+    err => this.error = "Coudn't get logged user")
     }
     else{
       this.loading = false;

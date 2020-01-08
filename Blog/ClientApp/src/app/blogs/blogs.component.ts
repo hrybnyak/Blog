@@ -18,6 +18,7 @@ export class BlogsComponent implements OnInit {
   loading: boolean = true;
   userBlogs: Blog[];
   loggedUser: User;
+  error:string = '';
 
   constructor(private authService: AuthService,
     private userService: UserService, private router: Router) { }
@@ -27,7 +28,8 @@ export class BlogsComponent implements OnInit {
       this.userBlogs = data;
       this.authService.getLoggedUser().subscribe(data => {this.loggedUser = data})
       this.loading = false;
-    });
+    }, 
+    (error) => this.error = "Sorry, couldn't load your blogs");
   }
 
   navigationSubscription = this.router.events.subscribe((e: any) => {

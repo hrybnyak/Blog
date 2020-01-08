@@ -23,6 +23,7 @@ export class PostListItemComponent implements OnInit {
   constructor(private dataService: DataService,
     private authService: AuthService,
     private router: Router) { }
+    error:string = ''
 
   ngOnInit() {
   }
@@ -33,6 +34,8 @@ export class PostListItemComponent implements OnInit {
 
   deletePost(event, postId: number) {
     event.stopPropagation();
-    this.dataService.deleteItem(ApiPaths.Posts, postId).subscribe(res => this.postDeleted.emit(postId));
+    this.dataService.deleteItem(ApiPaths.Posts, postId).subscribe(res => {this.postDeleted.emit(postId);
+    this.error = ''},
+    err => this.error = "Couldn't delete post");
   }
 }

@@ -18,6 +18,7 @@ export class PostViewComponent implements OnInit {
   categories : string;
   format: string = 'dd.MM.yyyy';
   loading: boolean = true;
+  error: string = '';
 
   constructor(private dataService: DataService, 
               private route: ActivatedRoute, 
@@ -47,12 +48,13 @@ export class PostViewComponent implements OnInit {
   }
     return result;
   }
-  
+
   onCommentAdded(comment: Comment): void {
     this.post.comments.unshift(comment);
   }
 
   deletePost() {
-    this.dataService.deleteItem(ApiPaths.Posts, this.post.id).subscribe(res => this.router.navigateByUrl(ApplicationPaths.Posts));
+    this.dataService.deleteItem(ApiPaths.Posts, this.post.id).subscribe(res => {this.router.navigateByUrl(ApplicationPaths.BlogView + this.post.blogId); this.error = ''},
+    err => this.error = "Couldn't delete this post");
   }
 }

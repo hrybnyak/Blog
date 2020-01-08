@@ -14,5 +14,8 @@
       <button type="button" class="btn btn-outline-danger" (click)="deletePost($event, post.id)"
         *ngIf="((this.authService.getId() == post.authorId) || this.authService.isModerator())">Delete</button>
     </div>
+    <div class='text-danger' *ngIf="error">
+      {{this.error}}
+    </div>
   </div>
 </div>

@@ -3,6 +3,9 @@
   <div class="d-flex w-100 justify-content-between align-items-center">
     <h3 class="mb-1 font-weight-normal">{{ blog.name.substr(0, 70) }}{{ blog.name.length > 70 ? '...' : null }}</h3>
   </div>
+  <div class="text-danger" *ngIf="this.error">
+  {{this.error}}
+  </div>
   <div class="d-flex w-100 justify-content-between">
     <div class="btn-group">
       <button type="button" class="btn btn-outline-success" routerLink="{{blog.id}}">Edit</button>
