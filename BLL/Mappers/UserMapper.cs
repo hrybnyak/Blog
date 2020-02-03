@@ -10,7 +10,8 @@ namespace BLL.Mappers
             return new User
             {
                 UserName = element.UserName,
-                Email = element.Email
+                Email = element.Email,
+                AvatarUrl = element.AvatarUrl
             };
         }
 
@@ -20,7 +21,8 @@ namespace BLL.Mappers
             {
                 UserName = element.UserName,
                 Id = element.Id,
-                Email = element.Email
+                Email = element.Email,
+                AvatarUrl = element.AvatarUrl
             };
         }
     }

@@ -14,5 +14,6 @@ namespace BLL.DTO
         public string Password { get; set; }
         public IEnumerable<BlogDTO> Blogs { get; set; }
         public IEnumerable<CommentDTO> Comments { get; set; }
+        public string AvatarUrl { get; set; }
     }
 }
