@@ -1,7 +1,7 @@
 <div class="row-auto">
 <form class="form-inline mb-lg-4">
   <div class="col-auto">
-    <input type="search" class="form-control" [(ngModel)]="this.search" (keydown)="this.getPosts()" name="search" placeholder="search">
+    <input type="search" class="form-control" [(ngModel)]="this.search" name="search" placeholder="search" #input>
   </div>
   <div class="col-auto">
     <div class="form-check form-check-inline">
