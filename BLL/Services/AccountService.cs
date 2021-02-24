@@ -213,21 +213,5 @@ namespace BLL.Services
             var comments = _unitOfWork.CommentRepository.Get(c => c.UserId == id);
             return CommentMapper.Map(comments);
         }
-
-        public static string SaveImage(IFormFile image, IWebHostEnvironment _environment)
-        {
-            var randomName = $"{Guid.NewGuid()}." + image.ContentType.Substring(6);
-            string path = _environment.WebRootPath + "\\Upload\\";
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-            using (FileStream fileStream = System.IO.File.Create(path + randomName))
-            {
-                image.CopyTo(fileStream);
-                fileStream.Flush();
-                return "\\Upload\\" + randomName;
-            }
-        }
     }
 }

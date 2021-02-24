@@ -91,10 +91,6 @@ namespace Blog
                 };
                 configureOptions.SaveToken = true;
             });
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/dist";
-            });
         }
 
         
@@ -120,24 +116,8 @@ namespace Blog
                 endpoints.MapControllers();
             });
 
-            if (!env.IsDevelopment())
-            {
-                app.UseSpaStaticFiles();
-            };
-
-
             app.UseOpenApi();
             app.UseSwaggerUi3();
-
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseAngularCliServer(npmScript: "start");
-                }
-            });
         }
     }
 }
