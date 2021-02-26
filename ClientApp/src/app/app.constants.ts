@@ -1,4 +1,4 @@
-export const BaseUrl = "https://localhost:44337/api"
+export const BaseUrl = "http://localhost:8000/api"
 
 export const ApiPaths = {
     Posts: '/articles',
