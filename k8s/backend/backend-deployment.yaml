@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-back-deployment
+spec:
+  replicas: 1                      # кількість екземплярів Pod, що буде створено цим Deployment
+  selector:
+    matchLabels:
+      app: blog-back                # селектор по якому Deployment зв'язаний з Pod
+  template:
+    metadata:
+     labels:
+       app: blog-back              # мітка Pod по якому вона буде зв'язана з Deployment та Service
+    spec:
+      containers:
+        - image: recklesseli/blog       
+          imagePullPolicy: IfNotPresent   
+          name: blog-back          # ім'я контейнеру
+          ports:
+            - containerPort: 8000  # порт по якому можна звертатись до поди
