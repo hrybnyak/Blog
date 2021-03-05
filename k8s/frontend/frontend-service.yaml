@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  labels:
+    app: angular-client
+    tier: frontend
+spec:
+  type: ClusterIP      # тип доступу до сервісу, ClusterIp - значення за замовчуванням і може бути пропущене
+  ports:
+    - port: 4200         # порт по якому можна звератись до сервісу
+      targetPort: 4200 # порт контейнера
+  selector:
+    app: angular-client      # селектор, всі Pod з даним селектором, будуть підключені до даного сервісу

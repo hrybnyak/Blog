@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: anguler-add-deployment
+    tier: frontend
+spec:
+  replicas: 1                     # кількість екземплярів Pod, що буде створено цим Deployment
+  selector:
+    matchLabels:
+      app: angular-client
+      tier: frontend                # селектор по якому Deployment зв'язаний з Pod
+  template:
+    metadata:
+     labels:
+      app: angular-client
+      tier: frontend               # мітка Pod по якому вона буде зв'язана з Deployment та Service
+    spec:
+      containers:
+        - image: wildnixon/microservicedemo:latest    
+          imagePullPolicy: IfNotPresent           # образ Docker
+          name: angular-client-container           # ім'я контейнеру
+          ports:
+            - containerPort: 4200  # порт по якому можна звертатись до поди
