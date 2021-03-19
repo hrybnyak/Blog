@@ -24,7 +24,7 @@ namespace TestApi
                     }
                 }
                 stopwatch.Stop();
-                Console.WriteLine($"average duration: {stopwatch.ElapsedMilliseconds / 1000} seconds.");
+                Console.WriteLine($"average duration: {stopwatch.ElapsedMilliseconds / 10000} seconds.");
                 Console.WriteLine($"failed responses: {countFailed}");
             }
         }
