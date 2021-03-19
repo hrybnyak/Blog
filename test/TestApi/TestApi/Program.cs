@@ -8,8 +8,8 @@ namespace TestApi
     {
         public static void Main(string[] args)
         {
-            //string path = "http://172.31.31.16/api/articles";
-            string path = "https://localhost:44337/api/articles";
+            string path = "http://172.31.31.16/api/articles";
+            //string path = "https://localhost:44337/api/articles";
             using (var httpClient = new HttpClient())
             {
                 long time = 0;
