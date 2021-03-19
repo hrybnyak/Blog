@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ModeratorApp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/moderator/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {

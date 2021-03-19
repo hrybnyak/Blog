@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - image: recklesseli/blog       
-          imagePullPolicy: IfNotPresent   
+          imagePullPolicy: Always   
           name: blog-back          # ім'я контейнеру
           ports:
             - containerPort: 8000  # порт по якому можна звертатись до поди
