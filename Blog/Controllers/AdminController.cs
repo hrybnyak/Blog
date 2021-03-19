@@ -18,7 +18,7 @@ namespace Blog.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly ILogger<AdminController> _logger;
-        private bool _broken = false;
+
         public AdminController(IAccountService accountService, ILogger<AdminController> logger)
         {
             _logger = logger;
@@ -70,10 +70,6 @@ namespace Blog.Controllers
         {
             try
             {
-                if (_broken)
-                {
-                    Thread.Sleep(10000);
-                }
                 var user = await _accountService.GetAllUsers();
                 if (user == null) throw new ArgumentNullException(nameof(user));
                 _logger.LogInformation("Admin successfully got information about all users");
@@ -89,16 +85,6 @@ namespace Blog.Controllers
                 _logger.LogError(ex, "Error occurred while admin tried to get all users' info");
                 throw;
             }
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        [Route("breakUsers")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult BreakUsersAdmin()
-        {
-            _broken = true;
-            return Ok();
         }
 
         [HttpGet]

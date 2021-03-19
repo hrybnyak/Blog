@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using BLL.DTO;
 using BLL.Exceptions;
@@ -17,7 +18,7 @@ namespace Blog.Controllers
     {
         private readonly IArticleService _articleService;
         private readonly ILogger<ArticlesController> _logger;
-
+        private static bool _broken = false;
         public ArticlesController(IArticleService articleService, ILogger<ArticlesController> logger)
         {
             _logger = logger;
@@ -59,12 +60,26 @@ namespace Blog.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [Route("breakArticles")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult BreakArticles()
+        {
+            _broken = true;
+            return Ok();
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetAllArticles()
         {
             try
             {
+                if (_broken)
+                {
+                    Thread.Sleep(10000);
+                }
                 var articles = _articleService.GetAllArticles();
                 if (articles == null) throw new ArgumentNullException(nameof(articles));
                 _logger.LogInformation("User successfully got articles' information");
