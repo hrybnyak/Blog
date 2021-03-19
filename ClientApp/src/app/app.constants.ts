@@ -1,4 +1,4 @@
-export const BaseUrl = "http://http://192.168.49.2/api"
+export const BaseUrl = "http://http://172.31.31.16/api"
 
 export const ApiPaths = {
     Posts: '/articles',

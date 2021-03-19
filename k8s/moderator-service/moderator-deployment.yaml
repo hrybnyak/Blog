@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moderator-app-deployment
+spec:
+  replicas: 1                      # кількість екземплярів Pod, що буде створено цим Deployment
+  selector:
+    matchLabels:
+      app: moderator-app                # селектор по якому Deployment зв'язаний з Pod
+  template:
+    metadata:
+     labels:
+       app: moderator-app             # мітка Pod по якому вона буде зв'язана з Deployment та Service
+    spec:
+      containers:
+        - image: recklesseli/moderator-app      
+          imagePullPolicy: IfNotPresent   
+          name: moderator-app          # ім'я контейнеру
+          ports:
+            - containerPort: 8001  # порт по якому можна звертатись до поди

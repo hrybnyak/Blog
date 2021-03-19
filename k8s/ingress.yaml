@@ -13,7 +13,13 @@ spec:
                 name: blog-back-service # ім'я сервісу
                 port:
                   number: 80           # порт на якому запущено сервіс
-                  
+          - path: /moderator           # шлях по якому відбувається перенаправлення на сервіс
+            pathType: Prefix           # все, що починається з `/api` буде направлено на сервіс demo-service. Альтернативно можна використовувати `Exact` та `ImplementationSpecific`
+            backend:
+              service:
+                name: moderator-app-service # ім'я сервісу
+                port:
+                  number: 81           # порт на якому запущено сервіс                 
           - path: /                    # шлях по якому відбувається перенаправлення на сервіс
             pathType: Prefix           # все, що починається з `/api` буде направлено на сервіс demo-service. Альтернативно можна використовувати `Exact` та `ImplementationSpecific`
             backend:
@@ -21,4 +27,5 @@ spec:
                 name: frontend-service # ім'я сервісу
                 port:
                   number: 4200           # порт на якому запущено сервіс
+          
           
